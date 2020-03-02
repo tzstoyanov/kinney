@@ -13,7 +13,7 @@ WSDL : https://webservices.chargepoint.com/cp_api_5.0.wsdl
 INTERVAL : 2
 SAVE_TO_FILE : True
 SAVE_ROOT : .
-FILENAME : load.data
+FILENAME : load.data.json
 STREAM : False
 STREAM_TO : None
 

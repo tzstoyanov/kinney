@@ -5,7 +5,9 @@ from config import config
 import constants
 from datetime import datetime
 from ev import ChargePoint, ChargeSessions, EVException, get_ENV_val
-import json
+# default JSON serializer of zeep.helpers.serialize_object doesnt handle
+# Decimal object but simplejson does.
+import simplejson as json
 import logging
 import os
 import time
@@ -104,9 +106,10 @@ def save_to_file(load):
     if DEBUG:
         print("Writing to file " + str(datafile))
 
-    datafile.write(
-        str(time.time()) + "  " +
-        str(zeep.helpers.serialize_object(load)) + "\n")
+    datafile.write(json.dumps({
+        'ts': time.time(),
+        'data': zeep.helpers.serialize_object(load),
+    }))
     datafile.flush()
     return
 
