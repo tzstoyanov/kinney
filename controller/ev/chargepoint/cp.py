@@ -15,6 +15,13 @@ from zeep import Client
 import zeep.helpers
 from zeep.wsse.username import UsernameToken
 
+logging.Formatter.converter = time.gmtime
+formatter = logging.basicConfig(
+    format='%(asctime)s.%(msecs)03dZ %(levelname)s:%(name)s:%(message)s',
+    datefmt='%Y-%m-%dT%H:%M:%S',
+    level=logging.DEBUG)
+logging.getLogger('zeep').setLevel(logging.ERROR)
+
 # COMMON config
 DEBUG = "True" == config["COMMON"]["DEBUG"]
 

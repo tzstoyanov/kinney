@@ -1,11 +1,20 @@
 # Copyright Year(s) program was created VMware, Inc.
 # SPDX-License-Identifier: Apache-2.0
-
-from flask import Flask, request
-import cp
-from constants import DEBUG, SUCCESS
 import json
 import logging
+import time
+
+from flask import Flask, request
+
+import cp
+
+from constants import DEBUG, SUCCESS
+
+logging.Formatter.converter = time.gmtime
+formatter = logging.basicConfig(
+    format='%(asctime)s.%(msecs)03dZ %(levelname)s:%(name)s:%(message)s',
+    datefmt='%Y-%m-%dT%H:%M:%S',
+    level=logging.DEBUG)
 
 app = Flask(__name__)
 SUCCESS = "100"
