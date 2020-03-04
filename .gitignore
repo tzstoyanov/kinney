@@ -234,4 +234,4 @@ go/
 
 # Protocol Buffers generated code
 *.pb*.go
-*_pb2.py
+*_pb2*.py
