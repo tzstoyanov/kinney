@@ -20,6 +20,20 @@ api.pb.gw.go:
 		--plugin=${GOBIN}/protoc-gen-grpc-gateway \
 		api.proto
 
+api_pb2.py:
+	protoc -I. \
+		--proto_path=${GOPATH}/src \
+		--proto_path=${GOPATH}/src/${GOOGLEAPIS} \
+		--python_out=. \
+		api.proto
+
+api_pb2_grpc.py:
+	python -m grpc_tools.protoc -I. \
+		--proto_path=${GOPATH}/src \
+		--proto_path=${GOPATH}/src/${GOOGLEAPIS} \
+		--grpc_python_out=. \
+		api.proto
+
 proxy: api.pb.go api.pb.gw.go
 	go install ${KINNEY}/orchestrator/proxy
 	@echo Binary: ${GOBIN}/proxy

@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 simplejson = "*"
 zeep = "*"
+googleapis-common-protos = "*"
+grpcio-tools = "*"
 
 [requires]
 python_version = "3.7"
