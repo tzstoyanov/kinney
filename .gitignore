@@ -228,3 +228,10 @@ tags
 # ==============================================================================
 # END AUTOGEN: Put manual additions below, if not available via gitignore.io. ==
 # ==============================================================================
+
+# Local GOPATH
+go/
+
+# Protocol Buffers generated code
+*.pb*.go
+*_pb2.py
