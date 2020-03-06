@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f8aad60aa7dd513b4e6f70a864c68e09e1953706574f5f66d5960e94959cddbd"
+            "sha256": "5917e7373511f23b26eb4580e57f12c9555ea3163b88159d668b1290f92cc37d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -196,6 +196,13 @@
                 "sha256:f9d632ce9fd485119c968ec6a7a343de698c5e014d17602ae2f110f1b05925ed",
                 "sha256:fb62996c61eeff56b59ab8abfcaa0859ec2223392c03d6085048b576b567459b"
             ],
+            "version": "==1.27.2"
+        },
+        "grpcio-reflection": {
+            "hashes": [
+                "sha256:c2c835dff3d805d776711d29a70316ef43e0c3e38279ac5ae34c35c6b10361ce"
+            ],
+            "index": "pypi",
             "version": "==1.27.2"
         },
         "grpcio-tools": {

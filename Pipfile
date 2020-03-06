@@ -11,6 +11,7 @@ zeep = "*"
 googleapis-common-protos = "*"
 grpcio-tools = "*"
 rootpath = "*"
+grpcio-reflection = "*"
 
 [requires]
 python_version = "3.7"
