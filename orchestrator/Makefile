@@ -34,11 +34,13 @@ api_pb2_grpc.py:
 		--grpc_python_out=. \
 		api.proto
 
+py: api_pb2.py api_pb2_grpc.py
+
 proxy: api.pb.go api.pb.gw.go
 	go install ${KINNEY}/orchestrator/proxy
 	@echo Binary: ${GOBIN}/proxy
 
 clean:
-	rm -f *.pb*.go
+	rm -f *.pb*.go *_pb2*.py
 
-.PHONY: env proxy clean
+.PHONY: env proxy clean py
