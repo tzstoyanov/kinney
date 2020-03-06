@@ -10,6 +10,7 @@ simplejson = "*"
 zeep = "*"
 googleapis-common-protos = "*"
 grpcio-tools = "*"
+rootpath = "*"
 
 [requires]
 python_version = "3.7"
