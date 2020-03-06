@@ -4,8 +4,9 @@
 import rootpath
 rootpath.append()
 
-import concurrent.futures as futures
+from concurrent import futures
 import grpc
+from grpc_reflection.v1alpha import reflection
 import logging
 import math
 import orchestrator.api_pb2 as pb
@@ -39,6 +40,13 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     o = Orchestrator()
     svc.add_OrchestratorServicer_to_server(o, server)
+
+    reflectable = [
+        pb.DESCRIPTOR.services_by_name['Orchestrator'].full_name,
+        reflection.SERVICE_NAME,
+    ]
+    reflection.enable_server_reflection(reflectable, server)
+
     server.add_insecure_port('[::]:8191')
     server.start()
     server.wait_for_termination()
