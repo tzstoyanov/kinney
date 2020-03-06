@@ -25,7 +25,7 @@ class Orchestrator(svc.OrchestratorServicer):
         Returns
             iterable of pb.ChargerCommand objects
         """
-        # Just grab the first point for now.
+        # Pro tempore: just grab point from first request.
         for r in requests:
             p = r.point
             break
@@ -36,8 +36,27 @@ class Orchestrator(svc.OrchestratorServicer):
         yield cmd
 
 
-def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+class _LoggingInterceptor(grpc.ServerInterceptor):
+    """gRPC interceptor that logs request contents for debugging."""
+
+    def intercept_service(self, continuation, req):
+        """Log one incoming gRPC request.
+
+        Args:
+            continuation: callable receiving request info
+            req: request info (not payload)
+        Returns:
+            value returned from continuation
+        """
+        logging.info("Received call: %r", req)
+        return continuation(req)
+
+
+def main():
+    logging.basicConfig(level=logging.INFO)
+
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
+                         interceptors=[_LoggingInterceptor()])
     o = Orchestrator()
     svc.add_OrchestratorServicer_to_server(o, server)
 
@@ -53,5 +72,4 @@ def serve():
 
 
 if __name__ == '__main__':
-    logging.basicConfig()
-    serve()
+    main()
