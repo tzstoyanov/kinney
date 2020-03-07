@@ -1,12 +1,13 @@
 include ../Makefile
 
-GOOGLEAPIS=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis
+GRPC_GATEWAY=github.com/grpc-ecosystem/grpc-gateway
+GOOGLEAPIS=github.com/grpc-ecosystem/grpc-gateway/
+GRPC_DIR=$(shell go list -m -f '{{.Dir}}' ${GRPC_GATEWAY})
 
 # Protocol Buffer Go API
 api.pb.go:
 	protoc -I. \
-		--proto_path=${GOPATH}/src \
-		--proto_path=${GOPATH}/src/${GOOGLEAPIS} \
+		--proto_path=${GRPC_DIR}/third_party/googleapis \
 		--go_out=plugins=grpc:. \
 		--plugin=${GOBIN}/protoc-gen-go \
 		api.proto
@@ -14,8 +15,7 @@ api.pb.go:
 # HTTP REST to gRPC adapter
 api.pb.gw.go:
 	protoc -I. \
-		--proto_path=${GOPATH}/src \
-		--proto_path=${GOPATH}/src/${GOOGLEAPIS} \
+		--proto_path=${GRPC_DIR}/third_party/googleapis \
 		--grpc-gateway_out=logtostderr=true:. \
 		--plugin=${GOBIN}/protoc-gen-grpc-gateway \
 		api.proto
