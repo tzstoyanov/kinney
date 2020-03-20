@@ -66,8 +66,10 @@ def main():
     ]
     reflection.enable_server_reflection(reflectable, server)
 
-    server.add_insecure_port('[::]:8191')
+    endpoint = '[::]:8191'
+    server.add_insecure_port(endpoint)
     server.start()
+    logging.info('Listening on %s', endpoint)
     server.wait_for_termination()
 
 

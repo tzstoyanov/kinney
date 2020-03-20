@@ -27,7 +27,9 @@ func run() error {
     return err
   }
 
-  return http.ListenAndServe(":8190", mux)
+  endpoint := ":8190"
+  glog.Infof("Listening on %s", endpoint)
+  return http.ListenAndServe(endpoint, mux)
 }
 
 func main() {
