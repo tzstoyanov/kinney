@@ -1,7 +1,6 @@
 include ../Makefile
 
 GRPC_GATEWAY=github.com/grpc-ecosystem/grpc-gateway
-GOOGLEAPIS=github.com/grpc-ecosystem/grpc-gateway/
 GRPC_DIR=$(shell go list -m -f '{{.Dir}}' ${GRPC_GATEWAY})
 
 # Protocol Buffer Go API
@@ -22,15 +21,13 @@ api.pb.gw.go:
 
 api_pb2.py:
 	protoc -I. \
-		--proto_path=${GOPATH}/src \
-		--proto_path=${GOPATH}/src/${GOOGLEAPIS} \
+		--proto_path=${GRPC_DIR}/third_party/googleapis \
 		--python_out=. \
 		api.proto
 
 api_pb2_grpc.py:
 	python -m grpc_tools.protoc -I. \
-		--proto_path=${GOPATH}/src \
-		--proto_path=${GOPATH}/src/${GOOGLEAPIS} \
+		--proto_path=${GRPC_DIR}/third_party/googleapis \
 		--grpc_python_out=. \
 		api.proto
 
