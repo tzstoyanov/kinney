@@ -1,7 +1,10 @@
 syntax = "proto3";
 
-package mimo;
+package kinney;
 
+option go_package = "orchestrator";
+
+import "google/api/annotations.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -10,7 +13,12 @@ service Orchestrator {
   // vehicle charging point. Client is a controller for one or more charging
   // points, and server is an optimizing coordinator. See Session and Command
   // messages below for details of the requests and responses.
-  rpc Charger(stream ChargerSession) returns (stream ChargerCommand);
+  rpc Charger(stream ChargerSession) returns (stream ChargerCommand) {
+    option (google.api.http) = {
+      post: "/v1/charger"
+      body: "*"
+    };
+  }
 }
 
 // Client provides a stream of Session messages to the server, which should be
