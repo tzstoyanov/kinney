@@ -22,3 +22,14 @@ env:
 		google.golang.org/grpc \
 		github.com/golang/protobuf/protoc-gen-go \
 		github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+	pip install pipenv
+	pipenv install
+	@if [ -z "${PIPENV_ACTIVE}" ]; \
+	then \
+		echo ====================================; \
+		echo WARNING: Currently outside of pipenv; \
+		echo Run to enter: \`pipenv shell\`; \
+		echo ====================================; \
+	fi
+
+.PHONY: env

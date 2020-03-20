@@ -1,3 +1,14 @@
+# Python dependencies from Pip
+#
+# Workspace setup:
+#   $ make env
+#   $ pipenv shell
+#   $ python foo/bar.py
+#
+# Adding a package:
+#   $ pipenv install
+#   $ git commit Pipfile Pipfile.lock
+
 [[source]]
 name = "pypi"
 url = "https://pypi.org/simple"
