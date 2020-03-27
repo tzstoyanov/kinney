@@ -102,23 +102,28 @@ def get_file():
 
 def save_to_file(load):
     global _DATAFILE
+    sg_load = load['sgLoad']
     if DEBUG:
         print(
-            str(time.time()) +
+            "time: " + str(time.time()) +
             "  total_load @ sgID(" +
             str(load["sgID"]) + ") = " +
-            load['sgLoad'] + "\n"
+            sg_load + "\n"
         )
-    datafile = get_file()
-    if DEBUG:
-        print("Writing to file " + str(datafile))
+    if (sg_load == '0.000'):
+        print("Skip writing to file, current load zero\n")
+        return
+    else:
+        datafile = get_file()
+        if DEBUG:
+            print("Writing to file " + str(datafile))
 
-    datafile.write(json.dumps({
-        'ts': time.time(),
-        'data': zeep.helpers.serialize_object(load),
-    }))
-    datafile.flush()
-    return
+        datafile.write(json.dumps({
+            'ts': time.time(),
+            'data': zeep.helpers.serialize_object(load),
+        }))
+        datafile.flush()
+        return
 
 
 def init():
@@ -230,7 +235,7 @@ def shed_load(id, percent_amount=0, absolute_amount=0, time_interval=0):
         shed_query["percentShedPerStation"] = percent_amount
 
     # shed interval, 0 means no limit
-    shed_query["timeInterval"] = time_interval 
+    shed_query["timeInterval"] = time_interval
     if DEBUG:
         print("shedQuery = " + str(shed_query))
     return _get_client().service.shedLoad(shed_query)
@@ -271,12 +276,14 @@ def poll_load(id):
     client = _get_client()
     search_query = _load_query(id)
     while True:
-        load = _get_load(client, search_query)
-        if _SAVE_TO_FILE:
-            save_to_file(load)
-        if _STREAM:
-            # TODO
-            print("Streaming not yet implemented")
+        try:
+            load = _get_load(client, search_query)
+            if _SAVE_TO_FILE:
+                save_to_file(load)
+            elif _STREAM:
+                # TODO
+                print("Streaming not yet implemented")
+        except Exception as ee:
+            print("Error: poll_load encountered exception: " + str(ee))
         # seconds
         time.sleep(_INTERVAL * 60)
-
