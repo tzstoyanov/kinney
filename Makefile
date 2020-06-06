@@ -17,10 +17,13 @@ ifndef GOBIN
 	export GOBIN
 endif
 
-env:
+goenv:
 	go get -v -u \
 		google.golang.org/grpc \
 		github.com/golang/protobuf/protoc-gen-go
+.PHONY: goenv
+
+pipenv:
 	pip install pipenv
 	pipenv install
 	@if [ -z "${PIPENV_ACTIVE}" ]; \
@@ -30,5 +33,4 @@ env:
 		echo Run to enter: \`pipenv shell\`; \
 		echo ====================================; \
 	fi
-
-.PHONY: env
+.PHONY: pipenv

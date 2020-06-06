@@ -22,4 +22,4 @@ py: api_pb2.py api_pb2_grpc.py
 clean:
 	rm -f *.pb*.go *_pb2*.py
 
-.PHONY: env clean py
+.PHONY: clean py
