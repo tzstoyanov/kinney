@@ -27,6 +27,10 @@ bin/protoc-gen-go-grpc:
 %_grpc.pb.go: %.proto bin/protoc-gen-go-grpc
 	protoc --go-grpc_out="module=${GO_MODULE}:." --plugin="./bin/protoc-gen-go-grpc" "$<"
 
+# Helper rule to regenerate all Protocol Buffer sources at once.
+protos: orchestrator/api.pb.go orchestrator/api_grpc.pb.go
+.PHONY: protos
+
 clean:
 	rm -r ./bin/
 	find . -name '*.pb.go' -delete
