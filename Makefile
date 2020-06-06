@@ -33,7 +33,6 @@ protos: orchestrator/api.pb.go orchestrator/api_grpc.pb.go
 
 clean:
 	rm -r ./bin/
-	find . -name '*.pb.go' -delete
 .PHONY: clean
 
 pipenv:
