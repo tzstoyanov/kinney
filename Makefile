@@ -20,9 +20,7 @@ endif
 env:
 	go get -v -u \
 		google.golang.org/grpc \
-		github.com/golang/protobuf/protoc-gen-go \
-		github.com/grpc-ecosystem/grpc-gateway \
-		github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+		github.com/golang/protobuf/protoc-gen-go
 	pip install pipenv
 	pipenv install
 	@if [ -z "${PIPENV_ACTIVE}" ]; \
