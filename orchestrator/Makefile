@@ -1,12 +1,3 @@
-include ../Makefile
-
-# Protocol Buffer Go API
-api.pb.go:
-	protoc -I. \
-		--go_out=plugins=grpc:. \
-		--plugin=${GOBIN}/protoc-gen-go \
-		api.proto
-
 api_pb2.py:
 	protoc -I. \
 		--python_out=. \
@@ -20,6 +11,6 @@ api_pb2_grpc.py:
 py: api_pb2.py api_pb2_grpc.py
 
 clean:
-	rm -f *.pb*.go *_pb2*.py
+	rm -f *_pb2*.py
 
 .PHONY: clean py

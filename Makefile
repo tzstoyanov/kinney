@@ -1,27 +1,36 @@
-# Common Makefile
+GO_MODULE="github.com/CamusEnergy/kinney"
 
-# This file is included in Makefiles for subdirectories, so should only contain
-# directives shared throughout the project.
+# Install the Go protoc plugin to `./bin/protoc-gen-go`.
+bin/protoc-gen-go:
+	go build -o "$@" "google.golang.org/protobuf/cmd/protoc-gen-go"
 
-KINNEY=github.com/CamusEnergy/kinney
+# Install the Go gRPC protoc plugin to `./bin/protoc-gen-go-grpc`.
+bin/protoc-gen-go-grpc:
+	go build -o "$@" "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
 
-# Base go inside of module, to avoid collisions with other projects.
-ifndef GOPATH
-	GOMOD=$(shell go env GOMOD)
-  GOPATH=$(dir ${GOMOD})go
-  export GOPATH
-endif
+# Generate the corresponding Go source for each Protocol Buffer descriptor file.
+#
+# Note that the "module" parameter to the plugin is an undocumented feature that
+# strips the module name prefix off of the output filenames.  Without this, all
+# of the output files would end up in tree rooted at "github.com":
+# https://github.com/protocolbuffers/protobuf-go/blob/69839c7/compiler/protogen/protogen.go#L430
+%.pb.go: %.proto bin/protoc-gen-go
+	protoc --go_out="module=${GO_MODULE}:." --plugin="./bin/protoc-gen-go" "$<"
 
-ifndef GOBIN
-  GOBIN=$(GOPATH)/bin
-	export GOBIN
-endif
+# Generate the corresponding Go gRPC source for the services in each Protocol
+# Buffer descriptor file.
+#
+# Note that this pattern is a subset of the `%.pb.go` rule: make "will choose
+# the rule with the shortest stem (that is, the pattern that matches most
+# specifically)."
+# https://www.gnu.org/software/make/manual/html_node/Pattern-Match.html#Pattern-Match
+%_grpc.pb.go: %.proto bin/protoc-gen-go-grpc
+	protoc --go-grpc_out="module=${GO_MODULE}:." --plugin="./bin/protoc-gen-go-grpc" "$<"
 
-goenv:
-	go get -v -u \
-		google.golang.org/grpc \
-		github.com/golang/protobuf/protoc-gen-go
-.PHONY: goenv
+clean:
+	rm -r ./bin/
+	find . -name '*.pb.go' -delete
+.PHONY: clean
 
 pipenv:
 	pip install pipenv

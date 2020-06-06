@@ -1,5 +1,6 @@
-# Local GOPATH
-go/
+# The `bin/` directory in the repository root is used by `Makefile` rules as the
+# installation destination of tools and other compiled binaries.
+/bin/
 
 # Protocol Buffers generated code
 *.pb*.go
