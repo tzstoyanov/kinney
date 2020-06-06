@@ -18,7 +18,8 @@ bin/protoc-gen-go-grpc:
 	protoc --go_out="module=${GO_MODULE}:." --plugin="./bin/protoc-gen-go" "$<"
 
 # Generate the corresponding Go gRPC source for the services in each Protocol
-# Buffer descriptor file.
+# Buffer descriptor file.  If the input file contains no service definitions,
+# then no output file will be created.
 #
 # Note that this pattern is a subset of the `%.pb.go` rule: make "will choose
 # the rule with the shortest stem (that is, the pattern that matches most
