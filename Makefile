@@ -63,6 +63,10 @@ bin/protoc-gen-go-grpc:
 # The Python gRPC generator has to run inside of the Python venv environment, as
 # it is installed by the `grpcio-tools` Python package:
 # https://grpc.io/docs/languages/python/basics/#generating-client-and-server-code
+#
+# Note that, contrary to the Go gRPC generator, this *will* create an output
+# file (that is effectively empty) if the input file contains no service
+# definitions.
 %_pb2_grpc.py: %.proto pipenv-dev
 	pipenv run python -m grpc_tools.protoc \
 		--proto_path="." \
@@ -79,8 +83,8 @@ protos: orchestrator/api_pb2.py orchestrator/api_pb2_grpc.py
 ################################################################################
 
 clean:
+	# Remove the directory containing locally installed tools.
 	-rm -r ./bin/
-	find . -name '*_pb2.py' -delete
-	find . -name '*_pb2_grpc.py' -delete
+	# Delete the Python virtual environment.
 	-pipenv --rm
 .PHONY: clean
