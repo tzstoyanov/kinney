@@ -1,28 +1,18 @@
-# Python dependencies from Pip
-#
-# Workspace setup:
-#   $ make env
-#   $ pipenv shell
-#   $ python foo/bar.py
-#
-# Adding a package:
-#   $ pipenv install
-#   $ git commit Pipfile Pipfile.lock
-
 [[source]]
 name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+grpcio-tools = "*"
 
 [packages]
+grpcio = "*"
+grpcio-reflection = "*"
+protobuf = "*"
+rootpath = "*"
 simplejson = "*"
 zeep = "*"
-googleapis-common-protos = "*"
-grpcio-tools = "*"
-rootpath = "*"
-grpcio-reflection = "*"
 
 [requires]
-python_version = "3.7"
+python_full_version = "3.7.7"

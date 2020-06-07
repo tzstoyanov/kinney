@@ -1,4 +1,22 @@
-GO_MODULE="github.com/CamusEnergy/kinney"
+################################################################################
+## Go
+################################################################################
+
+GO_MODULE_NAME="github.com/CamusEnergy/kinney"
+
+################################################################################
+## Python
+################################################################################
+
+# Initializes the Python virtual environment for development, or installs new
+# dependencies into the existing venv, as appropriate.
+pipenv-dev: Pipfile.lock
+	pipenv install --dev
+.PHONY: pipenv
+
+################################################################################
+## Protocol Buffers
+################################################################################
 
 # Install the Go protoc plugin to `./bin/protoc-gen-go`.
 bin/protoc-gen-go:
@@ -15,7 +33,10 @@ bin/protoc-gen-go-grpc:
 # of the output files would end up in tree rooted at "github.com":
 # https://github.com/protocolbuffers/protobuf-go/blob/69839c7/compiler/protogen/protogen.go#L430
 %.pb.go: %.proto bin/protoc-gen-go
-	protoc --go_out="module=${GO_MODULE}:." --plugin="./bin/protoc-gen-go" "$<"
+	protoc \
+		--go_out="module=${GO_MODULE_NAME}:." \
+		--plugin="./bin/protoc-gen-go" \
+		"$<"
 
 # Generate the corresponding Go gRPC source for the services in each Protocol
 # Buffer descriptor file.  If the input file contains no service definitions,
@@ -26,24 +47,40 @@ bin/protoc-gen-go-grpc:
 # specifically)."
 # https://www.gnu.org/software/make/manual/html_node/Pattern-Match.html#Pattern-Match
 %_grpc.pb.go: %.proto bin/protoc-gen-go-grpc
-	protoc --go-grpc_out="module=${GO_MODULE}:." --plugin="./bin/protoc-gen-go-grpc" "$<"
+	protoc \
+		--go-grpc_out="module=${GO_MODULE_NAME}:." \
+		--plugin="./bin/protoc-gen-go-grpc" \
+		"$<"
+
+# Generate the corresponding Python source for each Protocol Buffer descriptor
+# file.
+%_pb2.py: %.proto
+	protoc --python_out="." "$<"
+
+# Generate the corresponding Python gRPC source for the services in each
+# Protocol Buffer descriptor file.
+#
+# The Python gRPC generator has to run inside of the Python venv environment, as
+# it is installed by the `grpcio-tools` Python package:
+# https://grpc.io/docs/languages/python/basics/#generating-client-and-server-code
+%_pb2_grpc.py: %.proto pipenv-dev
+	pipenv run python -m grpc_tools.protoc \
+		--proto_path="." \
+		--grpc_python_out="." \
+		"$<"
 
 # Helper rule to regenerate all Protocol Buffer sources at once.
 protos: orchestrator/api.pb.go orchestrator/api_grpc.pb.go
+protos: orchestrator/api_pb2.py orchestrator/api_pb2_grpc.py
 .PHONY: protos
 
-clean:
-	rm -r ./bin/
-.PHONY: clean
+################################################################################
+## Cleanup
+################################################################################
 
-pipenv:
-	pip install pipenv
-	pipenv install
-	@if [ -z "${PIPENV_ACTIVE}" ]; \
-	then \
-		echo ====================================; \
-		echo WARNING: Currently outside of pipenv; \
-		echo Run to enter: \`pipenv shell\`; \
-		echo ====================================; \
-	fi
-.PHONY: pipenv
+clean:
+	-rm -r ./bin/
+	find . -name '*_pb2.py' -delete
+	find . -name '*_pb2_grpc.py' -delete
+	-pipenv --rm
+.PHONY: clean
