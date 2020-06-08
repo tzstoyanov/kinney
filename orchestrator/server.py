@@ -1,16 +1,13 @@
 """Trivial implementation of Kinney orchestrator."""
-
-# TODO(cody): move this into a common library for Python modules with __main__.
-import rootpath
-rootpath.append()
-
-from concurrent import futures
-import grpc
-from grpc_reflection.v1alpha import reflection
 import logging
 import math
-import orchestrator.api_pb2 as pb
-import orchestrator.api_pb2_grpc as svc
+from concurrent import futures
+
+import grpc
+from grpc_reflection.v1alpha import reflection
+
+import kinney.orchestrator.api_pb2 as pb
+import kinney.orchestrator.api_pb2_grpc as svc
 
 
 class Orchestrator(svc.OrchestratorServicer):
