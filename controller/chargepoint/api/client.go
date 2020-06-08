@@ -6,14 +6,14 @@
 //
 // TODO(james): Add more detail to the package comment, including examples of
 // how to use the library.
-package chargepoint
+package api
 
 import (
 	"context"
 	"io"
 	"net/http"
 
-	"github.com/CamusEnergy/kinney/controller/ev/chargepoint/go/schema"
+	"github.com/CamusEnergy/kinney/controller/chargepoint/api/schema"
 )
 
 // client provides an interface for communicating with a ChargePoint API server.

@@ -24,7 +24,7 @@ import (
 	"reflect"
 	"time"
 
-	chargepoint "github.com/CamusEnergy/kinney/controller/ev/chargepoint/go"
+	"github.com/CamusEnergy/kinney/controller/chargepoint/api"
 )
 
 var (
@@ -93,7 +93,7 @@ func mainInternal() error {
 
 	// Create the API client.
 	log.Printf("Connection to SOAP endpoint: %s", *url)
-	c := chargepoint.NewClient(*url, creds.APIKey, creds.APIPassword, httpLog)
+	c := api.NewClient(*url, creds.APIKey, creds.APIPassword, httpLog)
 
 	// Get the API method to call.
 	methodVal := reflect.ValueOf(c).MethodByName(*method)

@@ -1,4 +1,4 @@
-package chargepoint
+package api
 
 import (
 	"encoding/xml"
