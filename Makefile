@@ -1,8 +1,16 @@
+# This Makefile is assumed to be in the root of the repository, so its location
+# is used to derive the directory that is the repository root.
+#
+# https://www.gnu.org/software/make/manual/html_node/Special-Variables.html#index-MAKEFILE_005fLIST-_0028list-of-parsed-makefiles_0029
+# https://www.gnu.org/software/make/manual/html_node/Text-Functions.html#index-firstword
+# https://www.gnu.org/software/make/manual/html_node/File-Name-Functions.html#index-dir
+REPO_ROOT := $(dir $(firstword $(MAKEFILE_LIST)))
+
 ################################################################################
 ## Go
 ################################################################################
 
-GO_MODULE_NAME="github.com/CamusEnergy/kinney"
+GO_MODULE_NAME := github.com/CamusEnergy/kinney
 
 ################################################################################
 ## Python
@@ -10,8 +18,14 @@ GO_MODULE_NAME="github.com/CamusEnergy/kinney"
 
 # Initializes the Python virtual environment for development, or installs new
 # dependencies into the existing venv, as appropriate.
-pipenv-dev: Pipfile.lock
+pipenv:
 	pipenv install --dev
+	# Install a "*.pth" file in the virtual environment's site-packages
+	# directory in order to support importing code from the local repository
+	# without having to bundle and install the Python package.
+	pipenv run python util/install_pth.py \
+		--package_name="kinney" \
+		--package_root="$(REPO_ROOT)"
 .PHONY: pipenv
 
 ################################################################################
@@ -67,7 +81,7 @@ bin/protoc-gen-go-grpc:
 # Note that, contrary to the Go gRPC generator, this *will* create an output
 # file (that is effectively empty) if the input file contains no service
 # definitions.
-%_pb2_grpc.py: %.proto pipenv-dev
+%_pb2_grpc.py: %.proto pipenv
 	pipenv run python -m grpc_tools.protoc \
 		--proto_path="." \
 		--grpc_python_out="." \
