@@ -28,6 +28,19 @@ pipenv:
 		--package_root="$(REPO_ROOT)"
 .PHONY: pipenv
 
+# Run YAPF over the repository.  This rule requires the pipenv dev dependencies
+# to have been installed, but an explicit dependency on the `pipenv` rule is not
+# used to speed up execution time.
+yapf:
+	pipenv run yapf \
+		--parallel \
+		--in-place \
+		--recursive \
+		--exclude="*_pb2.py" \
+		--exclude="*_pb2_grpc.py" \
+		.
+.PHONY: yapf
+
 ################################################################################
 ## Protocol Buffers
 ################################################################################
