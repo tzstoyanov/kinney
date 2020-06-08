@@ -12,4 +12,3 @@ def get_ENV_val(str):
     else:
         errMsg = "Missing environment variable: " + str
         raise EVException(errMsg, constants.ERR_ENV_VAR_MISSING)
-    

@@ -33,7 +33,7 @@ def get_load(id):
             print("Successful: get_load(" + id + ")")
         return json.dumps(cp.process_load(res))
     else:
-        logging.error("Error: get_load(" + id + ") "  + res['responseText'])
+        logging.error("Error: get_load(" + id + ") " + res['responseText'])
         return res['responseText']
 
 
@@ -54,14 +54,13 @@ def curtail(id):
         amount = request.form['amount']
         percentage = request.form['percentage']
         time_interval = request.form['time_interval']
-    
+
     res = cp.shed_load(id, absolute_amount=amount, time_interval=time_interval)
     if (res['responseCode'] == SUCCESS):
         return "Success: Curtail on " + str(id)
     else:
         logging.error("Error: Curtail id: " + id + " " + res['responseText'])
         return res['responseText']
-
 
 
 @app.route("/api/v1/clear/<id>")
@@ -71,12 +70,10 @@ def clear(id):
     Note id will be parsed to extract a group of stations if specified
     or a station, or a port on a station
     """
-   
+
     res = cp.clear_shed(id)
     if (res['responseCode'] == SUCCESS):
-        return "Successful: Clear on " + id 
+        return "Successful: Clear on " + id
     else:
         logging.error("Error: Clear shed id: " + id + " " + res['responseText'])
-        return res['responseText'] 
-
-
+        return res['responseText']

@@ -25,9 +25,8 @@ class Vehicle():
     def __init__(self, ID):
         self.ID = ID
 
-    def set_specs(self, model, capacity,
-                 charge_rate, trickle_charge_rate,
-                 trickle_percent):
+    def set_specs(self, model, capacity, charge_rate, trickle_charge_rate,
+                  trickle_percent):
         self.model = model
         self.capacity = capacity
         self.charge_rate = charge_rate

@@ -1,7 +1,6 @@
 # Copyright 2020 program was created VMware, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-
 import time
 
 from classes.charge_session import ChargeSession
@@ -9,9 +8,6 @@ from classes.full_port import FullPort
 import constants
 import cp
 from util import get_ENV_val
-
-
-
 
 sgID = get_ENV_val("sgID")
 stationID = get_ENV_val("stationID")

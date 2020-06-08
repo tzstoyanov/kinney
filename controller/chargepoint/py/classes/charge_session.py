@@ -3,6 +3,7 @@
 
 import time
 
+
 class ChargeSession():
     full_port_ID = None
     vehicle = None
@@ -28,15 +29,15 @@ class ChargeSession():
     # TODO
     def update_charge(self, timestamp, load_KWhr):
         ret_load = 0.0
-        interval_mins = (timestamp - self.last_update)/60
+        interval_mins = (timestamp - self.last_update) / 60
         print("elapsed_time = " + str(interval_mins))
         self.last_update = timestamp
-        print("Enter compute_charge ts: " + str(timestamp)
-              + " insta_load: " + str(load_KWhr))
+        print("Enter compute_charge ts: " + str(timestamp) + " insta_load: " +
+              str(load_KWhr))
         vehicle = self.get_vehicle()
         print("**********")
         print(vehicle)
-        
+
         # approximate calculations here .. not taking care of trickle
 
         curr_charge = vehicle.current_charge
@@ -50,8 +51,6 @@ class ChargeSession():
             ret_load = load_KWhr
         self.total_charge = self.total_charge + add_charge
         return ret_load
-     
-
 
 
 class ChargeSessions:
@@ -70,4 +69,3 @@ class ChargeSessions:
         else:
             self.sessions[vehicleID] = start
         return start
-       

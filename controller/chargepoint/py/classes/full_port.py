@@ -7,6 +7,7 @@ from classes.charge_session import ChargeSession
 from classes.ev_exceptions import EVException
 import constants
 
+
 class FullPort():
     '''A representation of a charge port
     attributes:
@@ -95,14 +96,13 @@ class FullPort():
         self.shed_percent = None
 
     def shed(self, percent, amount):
-        if ((percent is None) and
-            (amount is None)):
+        if ((percent is None) and (amount is None)):
             raise EVException("One of amount or percent must be specified", 303)
         self.shed_state = True
         if (amount is not None):
             self.allowed_load = amount
             self.shed_percent = None
-        else: 
+        else:
             self.allowed_load = self.full_load * percent * 0.01
             self.shed_percent = percent
 
@@ -111,7 +111,7 @@ class FullPort():
             return 1
         else:
             return 0
-        
+
     def get_allowed_load(self):
         return self.allowed_load
 

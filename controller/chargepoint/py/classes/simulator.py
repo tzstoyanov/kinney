@@ -46,31 +46,36 @@ class CPInstance():
     shed_percent = 0
     last_update = None
 
-    def __init__(self, sgID, num_ports, address, capacity, locationType=STORE_LOCATION):
+    def __init__(self,
+                 sgID,
+                 num_ports,
+                 address,
+                 capacity,
+                 locationType=STORE_LOCATION):
         self.locationType = "Office"
         self.sgID = sgID
         self.address = address
         self.capacity = capacity
         self.num_ports = num_ports
         self.last_update = time.time()
-        full_load = (capacity / num_ports) # is this valid?
+        full_load = (capacity / num_ports)  # is this valid?
         # 2 ports per station
         for i in range(0, num_ports):
-            stationID = REGION_PREFIX + str(math.floor((i+1)/2))
-            portID = ((i+1) % 2)
+            stationID = REGION_PREFIX + str(math.floor((i + 1) / 2))
+            portID = ((i + 1) % 2)
             port = FullPort(sgID, stationID, portID)
             port.set_specs(address, full_load)
             self.ports.append(port)
 
     def fast_forward(self):
         now = time.time()
-        elapsed_time_mins = (now - self.last_update)/60
+        elapsed_time_mins = (now - self.last_update) / 60
         print("Simulator fast forward interval: " + str(elapsed_time_mins))
         # granularity minutes
         if (elapsed_time_mins >= 1.0):
             for p in self.ports:
                 if p.occupied():
-                    p.update_charge(now) 
+                    p.update_charge(now)
             self.last_update = now
 
     # Matching output to ChargePoint Instance wrapper
@@ -84,14 +89,13 @@ class CPInstance():
     # absolute amount, percentage amount
     # TODO could curtail at the level of an individual station and port
     def shed(self, percent, amount):
-        if ((percent is None) and
-            (amount is None)):
+        if ((percent is None) and (amount is None)):
             raise EVException("One of amount or percent must be specified", 303)
         self.shed_state = True
         if (amount is not None):
             self.allowed_load = amount
             self.shed_percent = None
-        else: 
+        else:
             self.allowed_load = self.capacity * percent * 0.01
             self.shed_percent = percent
 
@@ -112,7 +116,7 @@ class CPInstance():
         free_port = self.get_free_port()
         if (free_port is not None):
             cs = ChargeSession(vehicle, free_port.ID)
-            free_port.charge_session = cs 
+            free_port.charge_session = cs
             return cs
 
     def unplug(self, vehicle):
@@ -122,8 +126,8 @@ class CPInstance():
         for p in self.ports:
             if (p.get_vehicleID() == vehicle.ID):
                 cs = p.unplug()
-                print("Vehicle: " + vehicle.ID +
-                      " unplugged. Port: " + p.ID + " free")
+                print("Vehicle: " + vehicle.ID + " unplugged. Port: " + p.ID +
+                      " free")
                 _charge_sessions.append(cs)
 
     def get_num_charge_sessions(self):
@@ -135,7 +139,7 @@ class CPInstance():
 
     def get_load(self):
         return self.fmt_station_group()
-            
+
     def fmt_stations(self):
         curr_station = None
         port_list = []
@@ -156,22 +160,24 @@ class CPInstance():
             'responseCode': '100',
             'responseText': 'API input request executed successfully.',
             'sgID': self.sgID,
-            'numStations': (self.num_ports/2),
+            'numStations': (self.num_ports / 2),
             'groupName': "Sim" + str(self.sgID),
-            'sgLoad':  "Decimal(" + str(self.get_total_load()) + ")",
+            'sgLoad': "Decimal(" + str(self.get_total_load()) + ")",
             'stationData': station_data_list
-            }
+        }
 
 
 def fmt_port(aPort):
-    return {'portNumber': aPort.ID,
-            'userID': 'Anonymous',
-            'credentialID': aPort.get_vehicleID(),
-            'shedState': aPort.get_shed_state(),
-            'portLoad': "Decimal(" + str(aPort.get_load()) + ")",
-            'allowedLoad': "Decimal(" + str(aPort.get_allowed_load()) + ")",
-            'percentShed': aPort.get_percent_shed()
-            }
+    return {
+        'portNumber': aPort.ID,
+        'userID': 'Anonymous',
+        'credentialID': aPort.get_vehicleID(),
+        'shedState': aPort.get_shed_state(),
+        'portLoad': "Decimal(" + str(aPort.get_load()) + ")",
+        'allowedLoad': "Decimal(" + str(aPort.get_allowed_load()) + ")",
+        'percentShed': aPort.get_percent_shed()
+    }
+
 
 def fmt_station(port_list):
     port0 = port_list[0]
@@ -181,9 +187,10 @@ def fmt_station(port_list):
     for port in port_list:
         station_load = station_load + port.get_load()
         port_fmt_list.append(fmt_port(port))
-    return {'stationID': stationID,
-            'stationName':  str(stationID) + "Sim",
-            'Address':  str(stationID) + " Somewhere",
-            'stationLoad': "Decimal(" + str(station_load) + ")",
-            'ports': port_fmt_list
-            }
+    return {
+        'stationID': stationID,
+        'stationName': str(stationID) + "Sim",
+        'Address': str(stationID) + " Somewhere",
+        'stationLoad': "Decimal(" + str(station_load) + ")",
+        'ports': port_fmt_list
+    }

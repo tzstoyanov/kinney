@@ -32,7 +32,6 @@ WSDL = config["CHARGEPOINT"]["WSDL"]
 _CP_USERNAME = "CP_USERNAME"
 _CP_PASSWORD = "CP_PASSWORD"
 
-
 # POLL config
 _SAVE_TO_FILE = "True" == config["POLL"]["SAVE_TO_FILE"]
 _INTERVAL = int(config["POLL"]["INTERVAL"])
@@ -58,9 +57,7 @@ LOAD = None
 
 # TODO throw error if not defined
 def get_username_token():
-    return UsernameToken(
-        get_ENV_val(_CP_USERNAME),
-        get_ENV_val(_CP_PASSWORD))
+    return UsernameToken(get_ENV_val(_CP_USERNAME), get_ENV_val(_CP_PASSWORD))
 
 
 def get_file():
@@ -69,7 +66,7 @@ def get_file():
     structure that comprehends year, month, day, and hour
     and creates a file for appending in that directory with
     configured data file name
-    """ 
+    """
     global _CURRENT_SAVE_PATH, _CURRENT_HOUR, _DATAFILE, _FILENAME
 
     now = datetime.now()
@@ -104,12 +101,8 @@ def save_to_file(load):
     global _DATAFILE
     sg_load = load['sgLoad']
     if DEBUG:
-        print(
-            "time: " + str(time.time()) +
-            "  total_load @ sgID(" +
-            str(load["sgID"]) + ") = " +
-            sg_load + "\n"
-        )
+        print("time: " + str(time.time()) + "  total_load @ sgID(" +
+              str(load["sgID"]) + ") = " + sg_load + "\n")
     if (sg_load == '0.000'):
         print("Skip writing to file, current load zero\n")
         return
@@ -118,10 +111,11 @@ def save_to_file(load):
         if DEBUG:
             print("Writing to file " + str(datafile))
 
-        datafile.write(json.dumps({
-            'ts': time.time(),
-            'data': zeep.helpers.serialize_object(load),
-        }))
+        datafile.write(
+            json.dumps({
+                'ts': time.time(),
+                'data': zeep.helpers.serialize_object(load),
+            }))
         datafile.flush()
         return
 
@@ -143,6 +137,7 @@ def init():
 # Note load response is of type <class 'zeep.objects.getLoadResponse'>
 # and prints as a dictionary with a list of Station Data
 # and is a genuine python object whose fields you can access
+
 
 def _get_client():
     global _CLIENT
@@ -203,11 +198,11 @@ def get_load(id):
 
 
 def shed_load(id, percent_amount=0, absolute_amount=0, time_interval=0):
-    if DEBUG: 
+    if DEBUG:
         print("Enter shed_load")
     cp = ChargePoint.fromID(id)
     shed_query = {}
-    # if station parameters present, construct the more restrictive query 
+    # if station parameters present, construct the more restrictive query
     if (cp.stationID is not None):
         station_query = {"stationID": cp.stationID}
         if (cp.portID is not None):
@@ -225,8 +220,9 @@ def shed_load(id, percent_amount=0, absolute_amount=0, time_interval=0):
 
     # shed amount
     if ((absolute_amount is None) and (percent_amount is None)):
-        raise EVException("Both absolute_amount and Percent_amount cannot be None",
-                            constants.ERR_MISSING_AMOUNT)
+        raise EVException(
+            "Both absolute_amount and Percent_amount cannot be None",
+            constants.ERR_MISSING_AMOUNT)
 
     if (absolute_amount is not None):
         shed_query["allowedLoadPerStation"] = absolute_amount

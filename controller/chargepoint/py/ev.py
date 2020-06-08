@@ -16,6 +16,7 @@ def get_ENV_val(str):
 
 class EVException(Exception):
     err_code = None
+
     def __init__(self, message, code):
 
         # Call the base class constructor with the parameters it needs
