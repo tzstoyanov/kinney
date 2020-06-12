@@ -109,6 +109,9 @@ protos: orchestrator/api_pb2.py orchestrator/api_pb2_grpc.py
 ## Cleanup
 ################################################################################
 
+# Delete all files and release any auxiliary resources associated with the rules
+# in this Makefile.  Note that errors, if any, will be ignored (due to the "-"
+# prefix on each command) so that all commands will be run.
 clean:
 	# Remove the directory containing locally installed tools.
 	-rm -r ./bin/
