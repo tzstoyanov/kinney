@@ -120,7 +120,7 @@ func mainInternal() error {
 
 	// Unmarshal `--request` into `req`.
 	if err := json.Unmarshal([]byte(*request), req); err != nil {
-		return fmt.Errorf("error unmarshalling JSON request: %w", err)
+		return fmt.Errorf("error unmarshaling JSON request: %w", err)
 	}
 	log.Printf("Using request: %#v", req)
 
@@ -148,7 +148,7 @@ func mainInternal() error {
 	if !errVal.IsNil() {
 		return fmt.Errorf("error calling API: %w", errVal.Interface().(error))
 	} else if b, err := json.Marshal(respVal.Interface()); err != nil {
-		return fmt.Errorf("error marshalling response as JSON: %w", err)
+		return fmt.Errorf("error marshaling response as JSON: %w", err)
 	} else {
 		fmt.Fprintln(fd, string(b))
 	}
