@@ -28,7 +28,7 @@ type httpLogEntry struct {
 	Err error `json:",omitempty"`
 }
 
-// Issues a SOAP v1.1 request, unmarshalling the response into `respHeader` and
+// Issues a SOAP v1.1 request, unmarshaling the response into `respHeader` and
 // `respBody`.  Details of the HTTP request and response are written to
 // `httpLogWriter` as a JSON-serialized `httpLogEntry` (in JSONL format: one
 // line per entry).
@@ -119,7 +119,7 @@ func unmarshalEnvelope(b []byte, header, body interface{}) error {
 	env.Header.Payload = header
 	env.Body.Payload = body
 	if err := xml.Unmarshal(b, &env); err != nil {
-		return fmt.Errorf("error unmarshalling SOAP envelope: %w", err)
+		return fmt.Errorf("error unmarshaling SOAP envelope: %w", err)
 	}
 	return nil
 }
