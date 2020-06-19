@@ -2,7 +2,6 @@ package schema
 
 import (
 	"encoding/xml"
-	"math/big"
 )
 
 // API Guide (§ 8.1): "Use this call to return a list of stations.  This will
@@ -14,115 +13,108 @@ import (
 type GetStationsRequest struct {
 	XMLName xml.Name `xml:"urn:dictionary:com.chargepoint.webservices getStations"`
 
-	SearchQuery struct {
-		// API Guide (§ 8.1.2): "A unique station identifier used in
-		// ChargePoint.  This identifier never changes, even when the
-		// station's head assembly is swapped.  Format:
-		// CPNID:StationIdentifier."
-		StationID           string `xml:"stationID,omitempty"`
-		StationManufacturer string `xml:"stationManufacturer,omitempty"`
-		StationModel        string `xml:"stationModel,omitempty"`
-		// API Guide (§ 8.1.2): "Name of the station (wild card
-		// characters are allowed).  It should be searched for by both
-		// company name (the name of the organization that owns the
-		// charging station) and station name.  Company name is
-		// displayed on Line 1 of the charging station (if applicable)
-		// and the station name is displayed on Line 2 of the charging
-		// station (if applicable)."
-		StationName string `xml:"stationName,omitempty"`
+	// API Guide (§ 8.1.2): "A unique station identifier used in
+	// ChargePoint.  This identifier never changes, even when the station's
+	// head assembly is swapped.  Format: CPNID:StationIdentifier."
+	StationID           string `xml:"searchQuery>stationID,omitempty"`
+	StationManufacturer string `xml:"searchQuery>stationManufacturer,omitempty"`
+	StationModel        string `xml:"searchQuery>stationModel,omitempty"`
+	// API Guide (§ 8.1.2): "Name of the station (wild card characters are
+	// allowed).  It should be searched for by both company name (the name
+	// of the organization that owns the charging station) and station name.
+	// Company name is displayed on Line 1 of the charging station (if
+	// applicable) and the station name is displayed on Line 2 of the
+	// charging station (if applicable)."
+	StationName string `xml:"searchQuery>stationName,omitempty"`
 
-		// API Guide (§ 8.1.2): "Address around which you want to see
-		// stations.  This can be street address or complete address
-		// (street address, city, state, zip code, country)."
-		Address    string `xml:"Address,omitempty"`
-		City       string `xml:"City,omitempty"`
-		State      string `xml:"State,omitempty"`
-		Country    string `xml:"Country,omitempty"`
-		PostalCode string `xml:"postalCode,omitempty"`
+	// API Guide (§ 8.1.2): "Address around which you want to see stations.
+	// This can be street address or complete address (street address, city,
+	// state, zip code, country)."
+	Address    string `xml:"searchQuery>Address,omitempty"`
+	City       string `xml:"searchQuery>City,omitempty"`
+	State      string `xml:"searchQuery>State,omitempty"`
+	Country    string `xml:"searchQuery>Country,omitempty"`
+	PostalCode string `xml:"searchQuery>postalCode,omitempty"`
 
-		Coordinate *Coordinate `xml:"Geo,omitempty"`
-		// API Guide (§ 8.1.2): "Distance from the station's specified
-		// lat/long (Geo) from which you want to retrieve station
-		// information.  Default is 5"
-		Proximity *big.Rat `xml:"Proximity,omitempty"`
-		// API Guide (§ 8.1.2): "Default value for proximity unit is M.
-		// Can have values: M (miles), N (Nautical miles), K
-		// (Kilometer), F (Feet), I (Inches)."
-		ProximityUnit string `xml:"proximityUnit,omitempty"`
+	Coordinate *Coordinate `xml:"searchQuery>Geo,omitempty"`
+	// API Guide (§ 8.1.2): "Distance from the station's specified lat/long
+	// (Geo) from which you want to retrieve station information.  Default
+	// is 5"
+	Proximity string `xml:"searchQuery>Proximity,omitempty"`
+	// API Guide (§ 8.1.2): "Default value for proximity unit is M.  Can
+	// have values: M (miles), N (Nautical miles), K (Kilometer), F (Feet),
+	// I (Inches)."
+	ProximityUnit string `xml:"searchQuery>proximityUnit,omitempty"`
 
-		// WSDL: "Possible values 1 is Level 1, 2 is Level 2, 3 is Level
-		// 1 2 ,4 is DC charger, 5 Level 1, Level2, DC charger"
-		//
-		// API Guide (§ 8.1.2): "Station level type where 1 is 'Level
-		// 1', 2 is 'Level 2', 3 is 'Level 3', and 4 is 'DC Fast'.  If a
-		// station has more than one level (for example, the station
-		// provides both level 1 and level 2 charging), the response
-		// will includ both level (1,2).  Note: This parameter is for
-		// 'US Stations' and 'AU Stations' only (and is used instead of
-		// 'Mode')."
-		Level string `xml:"Level,omitempty"`
-		// API Guide (§ 8.1.2): "Station mode type where 1 is 'Mode 1',
-		// 3 is 'Mode 3', and 4 is 'DC Fast'.  If the station has more
-		// than one mode (for example, the station provides both mode 1
-		// with a domestic socket and mode 3 charging with an IEC 62196
-		// Type 2 socket), the response will include both modes (1,3).
-		// Note: This parameter is for "EU Stations" only (and is used
-		// instead of "Level").
-		Mode string `xml:"Mode,omitempty"`
+	// WSDL: "Possible values 1 is Level 1, 2 is Level 2, 3 is Level 1 2 ,4
+	// is DC charger, 5 Level 1, Level2, DC charger"
+	//
+	// API Guide (§ 8.1.2): "Station level type where 1 is 'Level 1', 2 is
+	// 'Level 2', 3 is 'Level 3', and 4 is 'DC Fast'.  If a station has more
+	// than one level (for example, the station provides both level 1 and
+	// level 2 charging), the response will includ both level (1,2).  Note:
+	// This parameter is for 'US Stations' and 'AU Stations' only (and is
+	// used instead of 'Mode')."
+	Level string `xml:"searchQuery>Level,omitempty"`
+	// API Guide (§ 8.1.2): "Station mode type where 1 is 'Mode 1', 3 is
+	// 'Mode 3', and 4 is 'DC Fast'.  If the station has more than one mode
+	// (for example, the station provides both mode 1 with a domestic socket
+	// and mode 3 charging with an IEC 62196 Type 2 socket), the response
+	// will include both modes (1,3).  Note: This parameter is for "EU
+	// Stations" only (and is used instead of "Level").
+	Mode string `xml:"searchQuery>Mode,omitempty"`
 
-		PricingSession *PricingSession `xml:"Pricing,omitempty"`
+	PricingSession *GetStationsRequest_PricingSession `xml:"searchQuery>Pricing,omitempty"`
 
-		// API Guide (§ 8.1.2): "Whether or not the station can be
-		// reserved: '1' - the station can be reserved.  '0' - the
-		// station cannot be reserved."
-		Reservable uint8 `xml:"Reservable,omitempty"`
+	// API Guide (§ 8.1.2): "Whether or not the station can be reserved: '1'
+	// - the station can be reserved.  '0' - the station cannot be
+	// reserved."
+	Reservable uint8 `xml:"searchQuery>Reservable,omitempty"`
 
-		// API Guide (§ 8.1.2): "Connector type.  For example: NEMA
-		// 5-20R, J1772, ALFENL3, Shuko."
-		Connector string `xml:"Connector,omitempty"`
+	// API Guide (§ 8.1.2): "Connector type.  For example: NEMA 5-20R,
+	// J1772, ALFENL3, Shuko."
+	Connector string `xml:"searchQuery>Connector,omitempty"`
 
-		// API Guide (§ 8.1.2): "Nominal voltage (V)."
-		Voltage string `xml:"Voltage,omitempty"`
-		// API Guide (§ 8.1.2): "Current supported (A)."
-		Current string `xml:"Current,omitempty"`
-		// API Guide (§ 8.1.2): "Power supported (kW)."
-		PowerKW string `xml:"Power,omitempty"`
+	// API Guide (§ 8.1.2): "Nominal voltage (V)."
+	Voltage string `xml:"searchQuery>Voltage,omitempty"`
+	// API Guide (§ 8.1.2): "Current supported (A)."
+	Current string `xml:"searchQuery>Current,omitempty"`
+	// API Guide (§ 8.1.2): "Power supported (kW)."
+	PowerKW string `xml:"searchQuery>Power,omitempty"`
 
-		// API Guide (§ 8.1.2): "Array of serial numbers of stations
-		// identified as a 'demo'.  Used only for client applications
-		// that need to access stations identified as 'demo'.
-		DemoStations *struct {
-			SerialNumbers []string `xml:"serialNumber"`
-		} `xml:"demoSerialNumber,omitempty"`
+	// API Guide (§ 8.1.2): "Array of serial numbers of stations identified
+	// as a 'demo'.  Used only for client applications that need to access
+	// stations identified as 'demo'.
+	DemoStationSerialNumbers []string `xml:"searchQuery>demoSerialNumber>serialNumber,omitempty"`
 
-		// API Guide (§ 8.1.2): "The org identifier CPNID:CompanyID"
-		OrganizationID   string `xml:"orgID,omitempty"`
-		OrganizationName string `xml:"organizationName,omitempty"`
-		StationGroupID   string `xml:"sgID,omitempty"`
-		StationGroupName string `xml:"sgName,omitempty"`
+	// API Guide (§ 8.1.2): "The org identifier CPNID:CompanyID"
+	OrganizationID   string `xml:"searchQuery>orgID,omitempty"`
+	OrganizationName string `xml:"searchQuery>organizationName,omitempty"`
+	StationGroupID   string `xml:"searchQuery>sgID,omitempty"`
+	StationGroupName string `xml:"searchQuery>sgName,omitempty"`
 
-		// API Guide (§ 8.1.2): "Start index for the stations that match
-		// the query."
-		StartRecord int32 `xml:"startRecord,omitempty"`
-		// API Guide (§ 8.1.2): "Number of stations to return in the
-		// response.  Maximum is 500, and if left blank, the method will
-		// return up to 500 stations."
-		NumRecords int32 `xml:"numStations,omitempty"`
+	// API Guide (§ 8.1.2): "Start index for the stations that match the
+	// query."
+	StartRecord int32 `xml:"searchQuery>startRecord,omitempty"`
+	// API Guide (§ 8.1.2): "Number of stations to return in the response.
+	// Maximum is 500, and if left blank, the method will return up to 500
+	// stations."
+	NumRecords int32 `xml:"searchQuery>numStations,omitempty"`
 
-		// Undocumented in the API Guide, but exist in the WSDL.
-		SerialNumber          string      `xml:"serialNumber,omitempty"`
-		StationActivationDate xsdDateTime `xml:"stationActivationDate,omitempty"`
-	} `xml:"searchQuery"`
+	// Undocumented in the API Guide, but exist in the WSDL.
+	SerialNumber          string      `xml:"searchQuery>serialNumber,omitempty"`
+	StationActivationDate xsdDateTime `xml:"searchQuery>stationActivationDate,omitempty"`
 }
 
-type PricingSession struct {
+type GetStationsRequest_PricingSession struct {
 	StartTime xsdTime `xml:"startTime"`
 
 	// WSDL: "Expected duration of charging session in minutes."
 	//
 	// API Guide (§ 8.1.2): "Estimated duration of session in hours"
 	ExpectedDurationMinutes int32 `xml:"Duration"`
-	// API Guide (§ 8.1.2): "Estimated energy needed for a charging session in kWh."
+	// API Guide (§ 8.1.2): "Estimated energy needed for a charging session
+	// in kWh."
 	ExpectedDurationKWh float64 `xml:"energyRequired"`
 
 	// This field is part of the XSD type used by "getStations", but is not
@@ -141,49 +133,7 @@ type GetStationsResponse struct {
 
 	commonResponseParameters
 
-	Stations []struct {
-		StationID           string `xml:"stationID,omitempty"`
-		StationManufacturer string `xml:"stationManufacturer,omitempty"`
-		StationModel        string `xml:"stationModel,omitempty"`
-		StationMACAddress   string `xml:"stationMacAddr,omitempty"`
-		StationSerialNumber string `xml:"stationSerialNum,omitempty"`
-
-		StationGroupID   string `xml:"sgID,omitempty"`
-		StationGroupName string `xml:"sgName,omitempty"`
-		OrganizationID   string `xml:"orgID"`
-		OrganizationName string `xml:"organizationName"`
-
-		// API Guide (§ 8.1.3): "Complete address (street address, city,
-		// state, zip code, country)."
-		Address    string `xml:"Address,omitempty"`
-		City       string `xml:"City,omitempty"`
-		State      string `xml:"State,omitempty"`
-		Country    string `xml:"Country,omitempty"`
-		PostalCode string `xml:"postalCode,omitempty"`
-
-		NumPorts int32  `xml:"numPorts,omitempty"`
-		Ports    []Port `xml:"Port,omitempty"`
-
-		// API Guide (§ 8.1.3): "The ISO 4217 code for the currency used
-		// on the station.  For eample, US Dollar = USD, Canadian Dollar
-		// = CAD, Euro = EUR."
-		CurrencyCode string `xml:"currencyCode,omitempty"`
-
-		// `maxOccurs` for this element in the WSDL is 2.
-		PricingSpecification []PricingSpecification `xml:"Pricing,omitempty"`
-
-		DriverSupportPhoneNumber string `xml:"mainPhone,omitempty"`
-
-		// Undocumented in the API Guide, but exist in the WSDL.
-		StationActivationDate xsdDateTime `xml:"stationActivationDate,omitempty"`
-		DriverName            string      `xml:"driverName,omitempty"`
-		DriverAddress         string      `xml:"driverAddress,omitempty"`
-		DriverEmail           string      `xml:"driverEmail,omitempty"`
-		DriverPhoneNumber     string      `xml:"driverPhoneNumber,omitempty"`
-		LastModifiedDate      xsdDateTime `xml:"lastModifiedDate,omitempty"`
-		ModTimeStamp          xsdDateTime `xml:"modTimeStamp,omitempty"`
-		TimezoneOffset        string      `xml:"timezoneOffset,omitempty"`
-	} `xml:"stationData,omitempty"`
+	Stations []GetStationsResponse_Station `xml:"stationData,omitempty"`
 
 	// API Guide (§ 8.1.3): "Indicates that the number of stations that
 	// match this query is greater than the maximum number of stations that
@@ -196,7 +146,72 @@ type GetStationsResponse struct {
 	Truncated bool `xml:"moreFlag,omitempty"`
 }
 
-type PricingSpecification struct {
+type GetStationsResponse_Station struct {
+	StationID           string `xml:"stationID,omitempty"`
+	StationManufacturer string `xml:"stationManufacturer,omitempty"`
+	StationModel        string `xml:"stationModel,omitempty"`
+	StationMACAddress   string `xml:"stationMacAddr,omitempty"`
+	StationSerialNumber string `xml:"stationSerialNum,omitempty"`
+
+	StationGroupID   string `xml:"sgID,omitempty"`
+	StationGroupName string `xml:"sgName,omitempty"`
+	OrganizationID   string `xml:"orgID"`
+	OrganizationName string `xml:"organizationName"`
+
+	// API Guide (§ 8.1.3): "Complete address (street address, city, state,
+	// zip code, country)."
+	Address    string `xml:"Address,omitempty"`
+	City       string `xml:"City,omitempty"`
+	State      string `xml:"State,omitempty"`
+	Country    string `xml:"Country,omitempty"`
+	PostalCode string `xml:"postalCode,omitempty"`
+
+	NumPorts int32                              `xml:"numPorts,omitempty"`
+	Ports    []GetStationsResponse_Station_Port `xml:"Port,omitempty"`
+
+	// API Guide (§ 8.1.3): "The ISO 4217 code for the currency used on the
+	// station.  For eample, US Dollar = USD, Canadian Dollar = CAD, Euro =
+	// EUR."
+	CurrencyCode string `xml:"currencyCode,omitempty"`
+
+	// `maxOccurs` for this element in the WSDL is 2.
+	PricingSpecification []GetStationsResponse_Station_PricingSpecification `xml:"Pricing,omitempty"`
+
+	DriverSupportPhoneNumber string `xml:"mainPhone,omitempty"`
+
+	// Undocumented in the API Guide, but exist in the WSDL.
+	StationActivationDate xsdDateTime `xml:"stationActivationDate,omitempty"`
+	DriverName            string      `xml:"driverName,omitempty"`
+	DriverAddress         string      `xml:"driverAddress,omitempty"`
+	DriverEmail           string      `xml:"driverEmail,omitempty"`
+	DriverPhoneNumber     string      `xml:"driverPhoneNumber,omitempty"`
+	LastModifiedDate      xsdDateTime `xml:"lastModifiedDate,omitempty"`
+	ModTimeStamp          xsdDateTime `xml:"modTimeStamp,omitempty"`
+	TimezoneOffset        string      `xml:"timezoneOffset,omitempty"`
+}
+
+type GetStationsResponse_Station_Port struct {
+	// API Guide (§ 8.1.3): "Identifier of the port.  This ID is 1 based."
+	PortNumber string `xml:"portNumber,omitempty"`
+
+	StationName string      `xml:"stationName,omitempty"`
+	Coordinate  *Coordinate `xml:"Geo,omitempty"`
+	Reservable  uint8       `xml:"Reservable,omitempty"`
+	Level       string      `xml:"Level,omitempty"`
+	Mode        string      `xml:"Mode,omitempty"`
+	Connector   string      `xml:"Connector,omitempty"`
+	Voltage     string      `xml:"Voltage,omitempty"`
+	Current     string      `xml:"Current,omitempty"`
+	PowerKW     string      `xml:"Power,omitempty"`
+
+	// Undocumented in the API Guide, but exist in the WSDL
+	Description   string      `xml:"Desription,omitempty"`
+	Status        string      `xml:"Status,omitempty"`
+	Timestamp     xsdDateTime `xml:"timeStamp,omitempty"`
+	EstimatedCost float64     `xml:"estimatedCost,omitempty"`
+}
+
+type GetStationsResponse_Station_PricingSpecification struct {
 	// API Guide (§ 8.1.3): "Pricing Type (Session, Hourly, or kWh)"
 	Type string `xml:"Type,omitempty"`
 
@@ -238,25 +253,4 @@ type PricingSpecification struct {
 	// API Guide (§ 8.1.3): "The hourly price for the second portion of the
 	// pricing specification if pricing varies by length of time"
 	UnitPricePerHourThereafter float64 `xml:"unitPricePerHourThereafter,omitempty"`
-}
-
-type Port struct {
-	// API Guide (§ 8.1.3): "Identifier of the port.  This ID is 1 based."
-	PortNumber string `xml:"portNumber,omitempty"`
-
-	StationName string      `xml:"stationName,omitempty"`
-	Coordinate  *Coordinate `xml:"Geo,omitempty"`
-	Reservable  uint8       `xml:"Reservable,omitempty"`
-	Level       string      `xml:"Level,omitempty"`
-	Mode        string      `xml:"Mode,omitempty"`
-	Connector   string      `xml:"Connector,omitempty"`
-	Voltage     string      `xml:"Voltage,omitempty"`
-	Current     string      `xml:"Current,omitempty"`
-	PowerKW     string      `xml:"Power,omitempty"`
-
-	// Undocumented in the API Guide, but exist in the WSDL
-	Description   string      `xml:"Desription,omitempty"`
-	Status        string      `xml:"Status,omitempty"`
-	Timestamp     xsdDateTime `xml:"timeStamp,omitempty"`
-	EstimatedCost float64     `xml:"estimatedCost,omitempty"`
 }

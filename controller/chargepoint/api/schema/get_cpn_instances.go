@@ -13,9 +13,11 @@ type GetCPNInstancesRequest struct {
 type GetCPNInstancesResponse struct {
 	XMLName xml.Name `xml:"urn:dictionary:com.chargepoint.webservices getCPNInstancesResponse"`
 
-	ChargePointNetworks []struct {
-		ChargePointNetworkID          string `xml:"cpnID,omitempty"`
-		ChargePointNetworkName        string `xml:"cpnName,omitempty"`
-		ChargePointNetworkDescription string `xml:"cpnDescription,omitempty"`
-	} `xml:"CPN,omitempty"`
+	ChargePointNetworks []GetCPNInstancesResponse_ChargePointNetwork `xml:"CPN,omitempty"`
+}
+
+type GetCPNInstancesResponse_ChargePointNetwork struct {
+	ID          string `xml:"cpnID,omitempty"`
+	Name        string `xml:"cpnName,omitempty"`
+	Description string `xml:"cpnDescription,omitempty"`
 }
