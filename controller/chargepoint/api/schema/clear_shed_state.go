@@ -7,25 +7,18 @@ import "encoding/xml"
 type ClearShedStateRequest struct {
 	XMLName xml.Name `xml:"urn:dictionary:com.chargepoint.webservices clearShedState"`
 
-	ShedQuery struct {
-		StationGroup *struct {
-			StationGroupID int32 `xml:"sgID"`
-		} `xml:"shedGroup,omitempty"`
+	StationGroupID *int32 `xml:"shedQuery>shedGroup>sgID,omitempty"`
 
-		Station *struct {
-			StationID string `xml:"stationID"`
+	StationID *string `xml:"shedQuery>shedStation>stationID,omitempty"`
 
-			// This part of the API is not documented in the API
-			// Guide, but it is part of the WSDL.
-			//
-			// TODO(james): Check if this is actually implemented in
-			// the API server.  If not, it should be removed from
-			// this schema representation.
-			Ports *struct {
-				PortNumbers []string `xml:"Port>portNumber"`
-			} `xml:"Ports,omitempty"`
-		} `xml:"shedStation,omitempty"`
-	} `xml:"shedQuery"`
+	// This part of the API is not documented in the API Guide, but it is
+	// part of the WSDL.
+	//
+	// Note that `StationID` is required if `PortNumbers` is specified.
+	//
+	// TODO(james): Check if this is actually implemented in the API server.
+	// If not, it should be removed from this schema representation.
+	PortNumbers []string `xml:"shedQuery>shedStation>Ports>Port>portNumber,omitempty"`
 }
 
 type ClearShedStateResponse struct {

@@ -16,16 +16,20 @@ type GetStationGroupsResponse struct {
 
 	commonResponseParameters
 
-	StationGroups []struct {
-		OrganizationID   string `xml:"orgID,omitempty"`
-		OrganizationName string `xml:"organizationName,omitempty"`
+	StationGroups []GetStationGroupsResponse_StationGroup `xml:"groupData,omitempty"`
+}
 
-		StationGroupID   int32  `xml:"sgID,omitempty"`
-		StationGroupName string `xml:"sgName,omitempty"`
+type GetStationGroupsResponse_StationGroup struct {
+	OrganizationID   string `xml:"orgID,omitempty"`
+	OrganizationName string `xml:"organizationName,omitempty"`
 
-		Stations []struct {
-			StationID  string      `xml:"stationID,omitempty"`
-			Coordinate *Coordinate `xml:"Geo,omitempty"`
-		} `xml:"stationData,omitempty"`
-	} `xml:"groupData,omitempty"`
+	StationGroupID   int32  `xml:"sgID,omitempty"`
+	StationGroupName string `xml:"sgName,omitempty"`
+
+	Stations []GetStationGroupsResponse_StationGroup_Station `xml:"stationData,omitempty"`
+}
+
+type GetStationGroupsResponse_StationGroup_Station struct {
+	StationID  string      `xml:"stationID,omitempty"`
+	Coordinate *Coordinate `xml:"Geo,omitempty"`
 }
