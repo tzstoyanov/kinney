@@ -82,6 +82,7 @@ func NewHandler(server ChargePointServer) http.Handler {
 			http.Error(w, "Failed marshaling the reply", http.StatusInternalServerError)
 			return
 		} else {
+			w.Header().Add("Content-Type", "text/xml;charset=UTF-8")
 			w.Write(rBytes)
 		}
 	})
