@@ -18,6 +18,7 @@ var (
 	dir  = flag.String("dir", "", "directory with json files, with recorded EV chargers data")
 	addr = flag.String("addr", ":8080", "IP address and port in format IP:port, used for listening for incoming API requests.")
 	url  = flag.String("url", "/", "API endpoint")
+	rgen = flag.String("rand", "", "input json file with parameters for random simulator")
 )
 
 func main() {
@@ -40,9 +41,17 @@ func main() {
 		}
 		count += c
 	}
+	if count > 0 {
+		fmt.Println("Loaded ", count, " samples")
+	}
 
-	fmt.Print("Loaded ", count, " samples")
-	fmt.Println()
+	if *rgen != "" {
+		err := sim.DataLoadRandom(rgen, ev)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	sim.DataPrint(ev)
 
 	mux := http.NewServeMux()
