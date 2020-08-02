@@ -14,16 +14,17 @@ import (
 )
 
 var (
-	file = flag.String("file", "", "excel file with recorded EV chargers data")
-	dir  = flag.String("dir", "", "directory with json files, with recorded EV chargers data")
-	addr = flag.String("addr", ":8080", "IP address and port in format IP:port, used for listening for incoming API requests.")
-	url  = flag.String("url", "/", "API endpoint")
-	rgen = flag.String("rand", "", "input json file with parameters for random simulator")
+	file    = flag.String("file", "", "excel file with recorded EV chargers data")
+	dir     = flag.String("dir", "", "directory with json files, with recorded EV chargers data")
+	addr    = flag.String("addr", ":8080", "IP address and port in format IP:port, used for listening for incoming API requests.")
+	url     = flag.String("url", "/", "API endpoint")
+	rgen    = flag.String("rand", "", "input json file with parameters for random simulator")
+	forward = flag.Float64("forward", 1.0, "fast forward time multiplier")
 )
 
 func main() {
 	flag.Parse()
-	ev := sim.NewEvChargers()
+	ev := sim.NewEvChargers(float32(*forward))
 	var count int
 
 	if *file != "" {

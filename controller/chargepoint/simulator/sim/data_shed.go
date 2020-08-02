@@ -88,7 +88,7 @@ func (e *EVChargers) schedPort(group *chargeGroup, stationID *string, port *char
 		port.shedTimer = nil
 	}
 	if minutes > 0 {
-		port.shedTimer = time.AfterFunc(time.Duration(minutes)*time.Minute, func() {
+		port.shedTimer = time.AfterFunc(time.Duration(float32(minutes)*e.fastForward)*time.Minute, func() {
 			e.lock.Lock()
 			defer e.lock.Unlock()
 			port.shedTimer = nil

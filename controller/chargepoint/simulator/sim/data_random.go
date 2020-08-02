@@ -54,7 +54,7 @@ func (g getLoadRandom) newChargeSession(port *chargePort, t time.Time) {
 }
 
 func (g getLoadRandom) calcNextLoad(port *chargePort, t time.Time) {
-	chargeTime := time.Since(port.now.lastComputed).Minutes()
+	chargeTime := t.Sub(port.now.lastComputed).Minutes()
 
 	port.now.vehicle.currCharge += (port.now.chargeRate * float32(chargeTime)) / 60
 	fmt.Printf("Vehicle [%s] %f/%f KW charged, ", *port.now.vehicle.driverId, port.now.vehicle.currCharge, port.now.vehicle.capacity)
@@ -67,7 +67,7 @@ func (g getLoadRandom) calcNextLoad(port *chargePort, t time.Time) {
 		if port.now.chargeRate > port.current_capacity {
 			port.now.chargeRate = port.current_capacity
 		}
-		port.now.lastComputed = time.Now()
+		port.now.lastComputed = t
 	}
 	fmt.Printf("charging @ %f KWh\n", port.now.chargeRate)
 }

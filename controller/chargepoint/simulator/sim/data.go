@@ -93,10 +93,12 @@ type chargeNetwork struct {
 }
 
 type EVChargers struct {
-	lock       sync.Mutex
-	drivers    map[string]int
-	facilities map[string]*chargeFacility
-	networks   map[string]*chargeNetwork
+	lock        sync.Mutex
+	simStart    time.Time
+	fastForward float32
+	drivers     map[string]int
+	facilities  map[string]*chargeFacility
+	networks    map[string]*chargeNetwork
 }
 
 const (
@@ -213,11 +215,12 @@ func (e *EVChargers) getCPNetwork(id, name, descriprtion *string) *chargeNetwork
 	return e.networks[*id]
 }
 
-func NewEvChargers() *EVChargers {
+func NewEvChargers(fastForward float32) *EVChargers {
 	return &EVChargers{
-		drivers:    make(map[string]int),
-		facilities: make(map[string]*chargeFacility),
-		networks:   make(map[string]*chargeNetwork),
+		fastForward: fastForward,
+		drivers:     make(map[string]int),
+		facilities:  make(map[string]*chargeFacility),
+		networks:    make(map[string]*chargeNetwork),
 	}
 }
 
@@ -272,4 +275,13 @@ func DataPrint(e *EVChargers) {
 	}
 	fmt.Printf("\nTotal %d facilities, %d groups, %d stations, %d ports, %d recorded vehicles\n",
 		len(e.facilities), nGroups, nStations, nPorts, len(e.drivers))
+}
+
+func (e *EVChargers) calcSimulationTime(t time.Time) time.Time {
+	if e.simStart.IsZero() {
+		e.simStart = t
+		return t
+	}
+
+	return e.simStart.Add(time.Duration(e.fastForward * float32(time.Since(e.simStart))))
 }
