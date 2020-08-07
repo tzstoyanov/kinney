@@ -23,6 +23,16 @@ type chargeSample struct {
 type vehicle struct {
 	driverId     *string
 	credentialID *string
+	capacity     float32 //KW
+	currCharge   float32 // KW
+	chargeRate   float32 // KW / KWh
+}
+
+type currentCharge struct {
+	vehicle      *vehicle
+	start        time.Time
+	lastComputed time.Time
+	chargeRate   float32 // KWh
 }
 
 type chargeSession struct {
@@ -32,7 +42,9 @@ type chargeSession struct {
 
 type chargePort struct {
 	sched    int
+	capacity float32 // KWh
 	recorded []*chargeSession
+	now      *currentCharge
 }
 
 type chargeStation struct {
@@ -195,7 +207,11 @@ func NewEvChargers() *EVChargers {
 
 // DataPrint prints the entire database with all charger ports
 func DataPrint(e *EVChargers) {
-	fmt.Println("Vechicles:", len(e.drivers))
+	var nGroups int
+	var nStations int
+	var nPorts int
+
+	fmt.Println("Vehicles:", len(e.drivers))
 	for i, v := range e.drivers {
 		fmt.Println("\t", i, "charged ", v, "times")
 
@@ -204,14 +220,20 @@ func DataPrint(e *EVChargers) {
 
 	for o, org := range e.facilities {
 		fmt.Println("Organization", *org.name, o)
+		nGroups += len(org.groups)
 		for i, gr := range org.groups {
 			fmt.Printf("\tStation group %s [%s]\n", i, *gr.name)
 
 			gr.getLoad.printGetLoadParams()
+			nStations += len(gr.stations)
 			for j, st := range gr.stations {
-				fmt.Printf("\t\tStation %s [%s]\n", j, *st.name)
+				fmt.Printf("\t\tStation %s [%s], %d ports\n", j, *st.name, len(st.ports))
+				nPorts += len(st.ports)
+				if !*printSummary && !*printDetail {
+					continue
+				}
 				for k, pr := range st.ports {
-					fmt.Println("\t\t\tPort", k, ", charges:", len(pr.recorded))
+					fmt.Printf("\t\t\tPort %s, charges: %d", k, len(pr.recorded))
 					if !*printSummary && !*printDetail {
 						continue
 					}
@@ -232,4 +254,6 @@ func DataPrint(e *EVChargers) {
 		}
 		fmt.Println()
 	}
+	fmt.Printf("\nTotal %d facilities, %d groups, %d stations, %d ports, %d recorded vehicles\n",
+		len(e.facilities), nGroups, nStations, nPorts, len(e.drivers))
 }

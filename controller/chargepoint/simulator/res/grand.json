@@ -1,0 +1,14 @@
+{
+	"maxCPNs" : 0,
+	"maxFacilities" : 0,
+	"maxChargeGroups" : 0,
+	"maxChargeStations" : 0,
+	"maxChargePorts" : 0,
+	"maxVehicleBattery": 80,
+	"CPNs" : 2,
+	"Facilities" : 1,
+	"ChargeGroups" : 2,
+	"ChargeStations" : 3,
+	"ChargePorts" :  2,
+	"PortLoad":	30
+}
