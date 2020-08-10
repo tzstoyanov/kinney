@@ -43,19 +43,17 @@ func (s SimulatorServer) GetLoad(req *schema.GetLoadRequest) (*schema.GetLoadRes
 	}
 
 	err = s.Ev.getNextLoad(resp, group, &req.StationID)
-
-	resp.StationGroupNumStations = int32(len(group.stations))
-	resp.StationGroupID = req.StationGroupID
-	if group.name != nil {
-		resp.StationGroupName = *group.name
-	}
-
-	if err == nil {
-		resp.ResponseCode = "100"
-		resp.ResponseText = "OK"
-	} else {
+	if err != nil {
 		resp.ResponseCode = "102"
 		resp.ResponseText = "No load recorded"
+	} else {
+		resp.ResponseCode = "100"
+		resp.ResponseText = "OK"
+		resp.StationGroupNumStations = int32(len(group.stations))
+		resp.StationGroupID = req.StationGroupID
+		if group.name != nil {
+			resp.StationGroupName = *group.name
+		}
 	}
 
 	return resp, nil
