@@ -91,6 +91,16 @@ func (c *client) GetStationGroups(ctx context.Context, req *schema.GetStationGro
 	return resp, nil
 }
 
+// API Guide (§ 8.5): "Use this call to retrieve organization and custom station
+// that you have access rights to."
+func (c *client) GetOrgsAndStationGroups(ctx context.Context, req *schema.GetOrgsAndStationGroupsRequest) (*schema.GetOrgsAndStationGroupsResponse, error) {
+	resp := &schema.GetOrgsAndStationGroupsResponse{}
+	if err := c.call(ctx, req, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // API Guide (§ 6): "Demand Management API"
 ////////////////////////////////////////////////////////////////////////////////
