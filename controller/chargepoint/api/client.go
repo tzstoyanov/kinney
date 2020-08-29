@@ -63,6 +63,41 @@ func (c *client) GetCPNInstances(ctx context.Context, req *schema.GetCPNInstance
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// API Guide (§ 6): "Demand Management API"
+////////////////////////////////////////////////////////////////////////////////
+
+// API Guide (§ 6.1): "Use this call to shed load for a single port on a
+// station, both ports on a multi-port station or a group of stations."
+func (c *client) ShedLoad(ctx context.Context, req *schema.ShedLoadRequest) (*schema.ShedLoadResponse, error) {
+	resp := &schema.ShedLoadResponse{}
+	if err := c.call(ctx, req, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// API Guide (§ 6.2): "Use this call to clear the shed state from a single
+// station or group of stations."
+func (c *client) ClearShedState(ctx context.Context, req *schema.ClearShedStateRequest) (*schema.ClearShedStateResponse, error) {
+	resp := &schema.ClearShedStateResponse{}
+	if err := c.call(ctx, req, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// API Guide (§ 6.3): "Use this call to retrieve the load and shed state for a
+// single station or custom station group.  This method also returns the load
+// for each port on a multi-port station."
+func (c *client) GetLoad(ctx context.Context, req *schema.GetLoadRequest) (*schema.GetLoadResponse, error) {
+	resp := &schema.GetLoadResponse{}
+	if err := c.call(ctx, req, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // API Guide (§ 8): "Station Management API"
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -102,34 +137,22 @@ func (c *client) GetOrgsAndStationGroups(ctx context.Context, req *schema.GetOrg
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// API Guide (§ 6): "Demand Management API"
+// API Guide (§ 10): "Driver Management API"
+//
+// "The methods in the Driver Management API allow you to interact with driver
+// data in an automated fashion."
 ////////////////////////////////////////////////////////////////////////////////
 
-// API Guide (§ 6.1): "Use this call to shed load for a single port on a
-// station, both ports on a multi-port station or a group of stations."
-func (c *client) ShedLoad(ctx context.Context, req *schema.ShedLoadRequest) (*schema.ShedLoadResponse, error) {
-	resp := &schema.ShedLoadResponse{}
-	if err := c.call(ctx, req, resp); err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-// API Guide (§ 6.2): "Use this call to clear the shed state from a single
-// station or group of stations."
-func (c *client) ClearShedState(ctx context.Context, req *schema.ClearShedStateRequest) (*schema.ClearShedStateResponse, error) {
-	resp := &schema.ClearShedStateResponse{}
-	if err := c.call(ctx, req, resp); err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-// API Guide (§ 6.3): "Use this call to retrieve the load and shed state for a
-// single station or custom station group.  This method also returns the load
-// for each port on a multi-port station."
-func (c *client) GetLoad(ctx context.Context, req *schema.GetLoadRequest) (*schema.GetLoadResponse, error) {
-	resp := &schema.GetLoadResponse{}
+// API Guide (§ 10.1): "Use this method to get a list of connected or managed
+// drivers.  If your organization uses ChargePoint Connections, this method will
+// return the list of all drivers who have requested a connection with your
+// organization, as well as a list of all drivers who have either been approved
+// or rejected as connected drivers.  If your organization uses a branded
+// ChargePoint portal to sign up drivers, then those drivers will appear in your
+// management real, and the list of those drivers will be returned by this
+// method."
+func (c *client) GetUsers(ctx context.Context, req *schema.GetUsersRequest) (*schema.GetUsersResponse, error) {
+	resp := &schema.GetUsersResponse{}
 	if err := c.call(ctx, req, resp); err != nil {
 		return nil, err
 	}

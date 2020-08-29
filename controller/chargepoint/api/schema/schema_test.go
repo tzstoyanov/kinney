@@ -235,6 +235,65 @@ func TestMarshal(t *testing.T) {
 			</getStationsResponse>`,
 		},
 
+		"GetUsersRequest": {
+			&GetUsersRequest{
+				UserID: "user_id",
+				Connection: &GetUsersRequest_Connection{
+					Status: "APPROVED",
+					CustomInfo: &GetUsersRequest_CustomInfo{
+						Key:   "foo",
+						Value: "bar",
+					},
+				},
+			},
+			`<getUsers xmlns="urn:dictionary:com.chargepoint.webservices">
+			  <searchQuery>
+			    <userID>user_id</userID>
+			    <Connection>
+			      <Status>APPROVED</Status>
+			      <customInfo>
+			        <Key>foo</Key>
+				<Value>bar</Value>
+			      </customInfo>
+			    </Connection>
+			  </searchQuery>
+			</getUsers>`,
+		},
+
+		"GetUsersResponse": {
+			&GetUsersResponse{
+				Users: []GetUsersResponse_User{
+					{
+						UserID: "user_id",
+						Connection: &GetUsersResponse_Connection{
+							Status: "APPROVED",
+							CustomInfo: []GetUsersResponse_CustomInfo{
+								{Key: "foo", Value: "bar"},
+							},
+						},
+					},
+				},
+			},
+			`<getUsersResponse xmlns="urn:dictionary:com.chargepoint.webservices">
+			  <responseCode></responseCode>
+			  <users>
+			    <user>
+			      <userID>user_id</userID>
+			      <Connection>
+			        <Status>APPROVED</Status>
+				<customInfos>
+				  <customInfo>
+				    <Key>foo</Key>
+				    <Value>bar</Value>
+				  </customInfo>
+				</customInfos>
+			      </Connection>
+			      <credentialIDs></credentialIDs>
+			    </user>
+			  </users>
+			</getUsersResponse>`,
+		},
+
 		"ShedLoadRequest_StationGroupID": {
 			&ShedLoadRequest{
 				StationGroupID:            1234,
