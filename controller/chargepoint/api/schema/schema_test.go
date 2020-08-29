@@ -123,6 +123,42 @@ func TestMarshal(t *testing.T) {
 			</getLoadResponse>`,
 		},
 
+		"GetOrgsAndStationGroupsRequest": {
+			&GetOrgsAndStationGroupsRequest{
+				OrganizationID: "org id",
+			},
+			`<getOrgsAndStationGroups xmlns="urn:dictionary:com.chargepoint.webservices">
+			  <searchQuery>
+			    <orgID>org id</orgID>
+			  </searchQuery>
+			</getOrgsAndStationGroups>`,
+		},
+
+		"GetOrgsAndStationGroupsResponse": {
+			&GetOrgsAndStationGroupsResponse{
+				Organizations: []GetOrgsAndStationGroupsResponse_Organization{
+					{
+						OrganizationID:   "org id",
+						OrganizationName: "org name",
+						StationGroups: []GetOrgsAndStationGroupsResponse_Organization_StationGroup{
+							{StationGroupID: 1234, StationGroupName: "sg name"},
+						},
+					},
+				},
+			},
+			`<getOrgsAndStationGroupsResponse xmlns="urn:dictionary:com.chargepoint.webservices">
+			  <responseCode></responseCode>
+			  <orgData>
+			    <orgID>org id</orgID>
+			    <organizationName>org name</organizationName>
+			    <sgData>
+			      <sgID>1234</sgID>
+			      <sgName>sg name</sgName>
+			    </sgData>
+			  </orgData>
+			</getOrgsAndStationGroupsResponse>`,
+		},
+
 		"GetStationGroupsResponse": {
 			&GetStationGroupsResponse{
 				StationGroups: []GetStationGroupsResponse_StationGroup{
