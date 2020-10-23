@@ -29,6 +29,7 @@ type randomParams struct {
 	NumChargeStations int `json:"ChargeStations"`
 	NumChargePorts    int `json:"ChargePorts"`
 	PortLoad          int `json:"PortLoad"`
+	VehicleUnplug     int `json:"VehicleUnplug,omitempty"`
 	RandSeed          int `json:"RandomSeed"`
 }
 
@@ -43,6 +44,9 @@ const (
 
 	// default probability of a port to have a charging session, in %
 	defPortLoad = 50
+
+	// default probability of a vehicle to unplug before fully charged, in %
+	defVehicleUnplug = 20
 )
 
 func randParam(min int, max int) int {
@@ -109,6 +113,7 @@ func genRandom(param *randomParams, e *EVChargers) {
 			e.getChargeGroup(&facility, &group, randString(1, ""),
 				&getLoadRandom{
 					portLoad:          param.PortLoad,
+					vehicleUnplug:     param.VehicleUnplug,
 					maxVehicleBattery: param.MaxVehicleBattery,
 				})
 
@@ -144,6 +149,7 @@ func DataLoadRandom(config *string, e *EVChargers) error {
 		NumChargePorts:    defChargePorts,
 		MaxVehicleBattery: defVehicleBattery,
 		PortLoad:          defPortLoad,
+		VehicleUnplug:     defVehicleUnplug,
 	}
 
 	if file, err = os.Open(*config); err != nil {

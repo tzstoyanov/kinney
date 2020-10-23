@@ -13,6 +13,9 @@ type getLoadRandom struct {
 	// Probability of a port to have a charge session, in %
 	portLoad int
 
+	// Probability of a vehicle to unplug before fully charged, in %
+	vehicleUnplug int
+
 	// Maximum capacity of a vehicle battery
 	maxVehicleBattery int
 }
@@ -61,6 +64,12 @@ func (g getLoadRandom) calcNextLoad(port *chargePort, t time.Time) {
 
 	if port.now.vehicle.currCharge >= port.now.vehicle.capacity {
 		// Vehicle is fully charged, unplug it
+		fmt.Printf("\tUNPLUGED\n")
+		port.now = nil
+	} else if rand.Intn(100) < g.vehicleUnplug &&
+		port.now.vehicle.currCharge >= (port.now.vehicle.capacity/4) {
+		// Unplug the vechicle if it is at least 25% charged, with given probability
+		fmt.Printf("\tUNPLUGED\n")
 		port.now = nil
 	} else {
 		port.now.chargeRate = port.now.vehicle.chargeRate * (port.now.vehicle.capacity - port.now.vehicle.currCharge)
@@ -68,8 +77,8 @@ func (g getLoadRandom) calcNextLoad(port *chargePort, t time.Time) {
 			port.now.chargeRate = port.current_capacity
 		}
 		port.now.lastComputed = t
+		fmt.Printf("charging @ %f KWh\n", port.now.chargeRate)
 	}
-	fmt.Printf("charging @ %f KWh\n", port.now.chargeRate)
 }
 
 func (g getLoadRandom) calcTime(group *chargeGroup) time.Time {
@@ -93,4 +102,5 @@ func (g getLoadRandom) getPortLoad(port *chargePort, t time.Time) (float32, *veh
 
 func (g getLoadRandom) printGetLoadParams() {
 	fmt.Println("\t\tProbability of a port to have a charge session", g.portLoad, "%")
+	fmt.Println("\t\tProbability of a vechicle to unplug before fully charged", g.vehicleUnplug, "%")
 }

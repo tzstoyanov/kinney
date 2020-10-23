@@ -10,5 +10,6 @@
 	"ChargeGroups" : 2,
 	"ChargeStations" : 3,
 	"ChargePorts" :  2,
-	"PortLoad":	30
+	"PortLoad":	30,
+	"VehicleUnplug": 20
 }
