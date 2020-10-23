@@ -1,0 +1,30 @@
+{
+	"PortLoad":	100,
+	"VehicleUnplug": 90,
+	"RandomSeed": 1213,
+
+	"FixedCPN" :[
+		{"Name":"Bulgaria", "Description":"Bulgaria CPN"}
+	],
+
+	"FixedFacilities": [
+		{ "Name":"South Bulgaria", "Groups":[
+			{"Name":"Sofia", "Stations": [
+				{ "Name":"Ring", "Address":"Ring str", "Geo":[42.624799, 23.352470], "Ports": [8.0, 8.0] },
+				{ "Name":"Serdica", "Address":"Sitniakovo str", "Geo":[42.691701, 23.354709], "Ports": [8.0, 8.0] }
+				]},
+			{"Name":"Plovid", "Stations": [
+				{ "Name":"Mall Ploviv", "Address":"Perushtica str", "Geo":[42.141073, 24.718713], "Ports": [8.0, 8.0] },
+				{ "Name":"Markovo Tepe", "Address":"Cankov str", "Geo":[42.140656, 24.740779], "Ports": [8.0, 8.0] }
+				]}
+			]
+		},
+		{ "Name":"North Bulgaria", "Groups":[
+			{"Name":"Varna", "Stations": [
+				{ "Name":"Mall Varna", "Address":"Milev str", "Geo":[43.220879, 27.889965], "Ports": [8.0, 8.0] }
+				]}
+			]
+		}
+	]
+}
+

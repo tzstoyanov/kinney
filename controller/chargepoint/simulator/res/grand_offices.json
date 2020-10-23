@@ -1,0 +1,25 @@
+{
+	"PortLoad":	80,
+	"VehicleUnplug": 50,
+	"RandomSeed": 1415,
+
+	"FixedCPN" :[
+		{"Name":"Bulgaria", "Description":"Bulgaria CPN"}
+	],
+
+	"FixedFacilities": [
+		{ "Name":"South Bulgaria", "Groups":[
+			{"Name":"Sofia", "Stations": [
+				{ "Name":"Garitage", "Address":"Ring Road str", "Geo":[42.623165, 23.372628], "Ports": [8.0, 8.0] },
+				{ "Name":"Biznes Park", "Address":"Moskov str", "Geo":[42.627547, 23.375511], "Ports": [8.0, 8.0] },
+				{ "Name":"Galaxy", "Address":"Kopernik str", "Geo":[42.627547, 23.375511], "Ports": [8.0, 8.0] }
+				]},
+			{"Name":"Burgas", "Stations": [
+				{ "Name":"Lazur", "Address":"Batak str", "Geo":[42.510304, 27.472166], "Ports": [8.0, 8.0] },
+				{ "Name":"Izgrev", "Address":"Dimov str", "Geo":[42.529184, 27.468694], "Ports": [8.0, 8.0] }
+				]}
+			]
+		}
+	]
+}
+

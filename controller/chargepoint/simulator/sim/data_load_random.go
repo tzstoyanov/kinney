@@ -16,21 +16,45 @@ import (
 	"github.com/sethvargo/go-diceware/diceware"
 )
 
+type fixedStation struct {
+	Name    string    `json:"Name,omitempty"`
+	Address string    `json:"Address,omitempty"`
+	Geo     []float32 `json:"Geo,omitempty"`
+	Ports   []float32 `json:"Ports,omitempty"`
+}
+
+type fixedGroup struct {
+	Name     string         `json:"Name,omitempty"`
+	Stations []fixedStation `json:"Stations,omitempty"`
+}
+
+type fixedFacility struct {
+	Name   string       `json:"Name,omitempty"`
+	Groups []fixedGroup `json:"Groups,omitempty"`
+}
+
+type fixedCPN struct {
+	Name string `json:"Name,omitempty"`
+	Desc string `json:"Description,omitempty"`
+}
+
 type randomParams struct {
-	MaxCPNs           int `json:"maxCPNs"`
-	MaxFacilities     int `json:"maxFacilities"`
-	MaxChargeGroups   int `json:"maxChargeGroups"`
-	MaxChargeStations int `json:"maxChargeStations"`
-	MaxChargePorts    int `json:"maxChargePorts"`
-	MaxVehicleBattery int `json:"maxVehicleBattery"`
-	NumCPNs           int `json:"CPNs"`
-	NumFacilities     int `json:"Facilities"`
-	NumChargeGroups   int `json:"ChargeGroups"`
-	NumChargeStations int `json:"ChargeStations"`
-	NumChargePorts    int `json:"ChargePorts"`
-	PortLoad          int `json:"PortLoad"`
-	VehicleUnplug     int `json:"VehicleUnplug,omitempty"`
-	RandSeed          int `json:"RandomSeed"`
+	MaxCPNs           int             `json:"maxCPNs,omitempty"`
+	MaxFacilities     int             `json:"maxFacilities,omitempty"`
+	MaxChargeGroups   int             `json:"maxChargeGroups,omitempty"`
+	MaxChargeStations int             `json:"maxChargeStations,omitempty"`
+	MaxChargePorts    int             `json:"maxChargePorts,omitempty"`
+	MaxVehicleBattery int             `json:"maxVehicleBattery,omitempty"`
+	NumCPNs           int             `json:"CPNs,omitempty"`
+	NumFacilities     int             `json:"Facilities,omitempty"`
+	NumChargeGroups   int             `json:"ChargeGroups,omitempty"`
+	NumChargeStations int             `json:"ChargeStations,omitempty"`
+	NumChargePorts    int             `json:"ChargePorts,omitempty"`
+	PortLoad          int             `json:"PortLoad,omitempty"`
+	VehicleUnplug     int             `json:"VehicleUnplug,omitempty"`
+	RandSeed          int             `json:"RandomSeed,omitempty"`
+	CPNs              []fixedCPN      `json:"FixedCPN,omitempty"`
+	Facilities        []fixedFacility `json:"FixedFacilities,omitempty"`
 }
 
 const (
@@ -66,13 +90,114 @@ func randString(words int, sep string) *string {
 	return &str
 }
 
+func newCPN(e *EVChargers, c int, name, desc *string) {
+	str := strconv.FormatInt(int64(c), 10)
+	e.getCPNetwork(&str, name, desc)
+}
+
+func newPort(e *EVChargers, facility, group, station *string, id int, capacity float32) {
+	str := strconv.FormatInt(int64(id), 10)
+	port := e.getChargePort(facility, group, station, &str)
+	port.max_capacity = capacity
+	port.current_capacity = capacity
+}
+
+func newStation(e *EVChargers, facility, group *string, rParam *randomParams, fStation *fixedStation) {
+	nChargePorts := rParam.NumChargePorts
+	if rParam.MaxChargePorts > 0 {
+		nChargePorts = randParam(1, rParam.MaxChargeStations)
+	}
+
+	var sAddress, sName string
+	var loc locGeo
+	sID := fmt.Sprintf("1:%d", randParam(100000, 999999))
+	if fStation != nil {
+		sName = fStation.Name
+		sAddress = fStation.Address
+		if len(fStation.Geo) == 2 {
+			loc = locGeo{}
+			loc.lat = fmt.Sprintf("%f", fStation.Geo[0])
+			loc.long = fmt.Sprintf("%f", fStation.Geo[1])
+		} else {
+			loc = locGeo{lat: geoDefLat, long: geoDefLong}
+		}
+	} else {
+		sName = *randString(1, "")
+		sAddress = *randString(5, ",")
+		loc = locGeo{lat: geoDefLat, long: geoDefLong}
+	}
+
+	e.getChargeStation(facility, group, &sID, &sName, &sAddress, &loc)
+	if fStation != nil && len(fStation.Ports) > 0 {
+		for i, p := range fStation.Ports {
+			newPort(e, facility, group, &sID, i, p)
+		}
+	} else {
+		for p := 0; p < nChargePorts; p++ {
+			newPort(e, facility, group, &sID, p, defPortCapacity)
+		}
+	}
+}
+
+func newGroup(e *EVChargers, facility *string, rParam *randomParams, fGroup *fixedGroup) {
+	nChargeStations := rParam.NumChargeStations
+	if rParam.MaxChargeStations > 0 {
+		nChargeStations = randParam(1, rParam.MaxChargeStations)
+	}
+
+	var gName string
+	gID := fmt.Sprintf("%d", randParam(100000, 999999))
+	if fGroup != nil {
+		gName = fGroup.Name
+	} else {
+		gName = *randString(1, "")
+	}
+	e.getChargeGroup(facility, &gID, &gName,
+		&getLoadRandom{
+			portLoad:          rParam.PortLoad,
+			vehicleUnplug:     rParam.VehicleUnplug,
+			maxVehicleBattery: rParam.MaxVehicleBattery,
+		})
+	if fGroup != nil && len(fGroup.Stations) > 0 {
+		for _, s := range fGroup.Stations {
+			newStation(e, facility, &gID, rParam, &s)
+		}
+	} else {
+		for s := 0; s < nChargeStations; s++ {
+			newStation(e, facility, &gID, rParam, nil)
+		}
+	}
+}
+
+func newFacility(e *EVChargers, rParam *randomParams, fFacility *fixedFacility) {
+	nChargeGroups := rParam.NumChargeGroups
+	if rParam.MaxChargeGroups > 0 {
+		nChargeGroups = randParam(1, rParam.MaxChargeGroups)
+	}
+
+	var fName string
+	fID := fmt.Sprintf("1:%d", randParam(10000000, 99999999))
+	if fFacility != nil {
+		fName = fFacility.Name
+	} else {
+		fName = *randString(1, "")
+	}
+	e.getChargeFacility(&fID, &fName)
+	if fFacility != nil && len(fFacility.Groups) > 0 {
+		for _, g := range fFacility.Groups {
+			newGroup(e, &fID, rParam, &g)
+		}
+	} else {
+		for g := 0; g < nChargeGroups; g++ {
+			newGroup(e, &fID, rParam, nil)
+		}
+	}
+}
+
 func genRandom(param *randomParams, e *EVChargers) {
 
 	nCPNs := param.NumCPNs
 	nFacilities := param.NumFacilities
-	nChargeGroups := param.NumChargeGroups
-	nChargeStations := param.NumChargeStations
-	nChargePorts := param.NumChargePorts
 
 	if param.RandSeed > 0 {
 		rand.Seed(int64(param.RandSeed))
@@ -86,55 +211,28 @@ func genRandom(param *randomParams, e *EVChargers) {
 	if param.MaxFacilities > 0 {
 		nFacilities = randParam(1, param.MaxFacilities)
 	}
-	if param.MaxChargeGroups > 0 {
-		nChargeGroups = randParam(1, param.MaxChargeGroups)
-	}
-	if param.MaxChargeStations > 0 {
-		nChargeStations = randParam(1, param.MaxChargeStations)
-	}
-	if param.MaxChargePorts > 0 {
-		nChargePorts = randParam(1, param.MaxChargeStations)
-	}
 
-	// Generate up to param.MaxCPNs random networks
-	for c := 0; c <= nCPNs; c++ {
-		str := strconv.FormatInt(int64(c), 10)
-		e.getCPNetwork(&str, randString(1, ""), randString(5, ","))
-	}
-
-	// Generate up to param.MaxFacilities random facilities
-	for f := 0; f < nFacilities; f++ {
-		facility := fmt.Sprintf("1:%d", randParam(10000000, 99999999))
-		e.getChargeFacility(&facility, randString(1, ""))
-
-		// Generate up to param.MaxChargeGroups random charge groups in each facilitie
-		for g := 0; g < nChargeGroups; g++ {
-			group := fmt.Sprintf("%d", randParam(100000, 999999))
-			e.getChargeGroup(&facility, &group, randString(1, ""),
-				&getLoadRandom{
-					portLoad:          param.PortLoad,
-					vehicleUnplug:     param.VehicleUnplug,
-					maxVehicleBattery: param.MaxVehicleBattery,
-				})
-
-			// Generate up to param.MaxChargeStations random charge stations in each group
-			for s := 0; s < nChargeStations; s++ {
-				station := fmt.Sprintf("1:%d", randParam(100000, 999999))
-				e.getChargeStation(&facility, &group, &station, randString(1, ""),
-					randString(5, ","),
-					&locGeo{lat: geoDefLat, long: geoDefLong})
-
-				// Generate up to param.MaxChargePorts random charge ports in each station
-				for p := 0; p < nChargePorts; p++ {
-					str := strconv.FormatInt(int64(p), 10)
-					port := e.getChargePort(&facility, &group, &station, &str)
-					port.max_capacity = defPortCapacity
-					port.current_capacity = defPortCapacity
-				}
-			}
+	// Generate networks
+	if len(param.CPNs) > 0 {
+		for c, n := range param.CPNs {
+			newCPN(e, c, &n.Name, &n.Desc)
+		}
+	} else {
+		for c := 0; c <= nCPNs; c++ {
+			newCPN(e, c, randString(1, ""), randString(5, ","))
 		}
 	}
 
+	// Generate facilities
+	if len(param.Facilities) > 0 {
+		for _, f := range param.Facilities {
+			newFacility(e, param, &f)
+		}
+	} else {
+		for f := 0; f < nFacilities; f++ {
+			newFacility(e, param, nil)
+		}
+	}
 }
 
 func DataLoadRandom(config *string, e *EVChargers) error {

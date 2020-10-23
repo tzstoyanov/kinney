@@ -1,0 +1,49 @@
+{
+	"PortLoad":	60,
+	"VehicleUnplug": 20,
+	"RandomSeed": 999,
+	
+	"FixedCPN" :[
+		{"Name":"Bulgaria", "Description":"Bulgaria CPN"}
+	],
+
+	"FixedFacilities": [
+		{ "Name":"South Bulgaria", "Groups":[
+			{"Name":"Sofia", "Stations": [
+				{ "Name":"Mladost", "Address":"Nov Den str", "Geo":[42.631935, 23.378358], "Ports": [8.0, 8.0] },
+				{ "Name":"Center", "Address":"Rakovski str", "Geo":[42.695118, 23.329344], "Ports": [8.0, 8.0] },
+				{ "Name":"Lulin", "Address":"Bonev str", "Geo":[42.721420, 23.245246], "Ports": [8.0, 8.0] }
+				]},
+			{"Name":"Plovid", "Stations": [
+				{ "Name":"East", "Address":"Venera str", "Geo":[42.156190, 24.792090], "Ports": [8.0, 8.0] },
+				{ "Name":"West", "Address":"Lozarcska str", "Geo":[42.106477, 24.704244], "Ports": [8.0, 8.0] },
+				{ "Name":"South", "Address":"Belomorska str", "Geo":[42.112780, 24.734709], "Ports": [8.0, 8.0] }
+				]},
+			{"Name":"Yambol", "Stations": [
+				{ "Name":"Levski", "Address":"Galac str", "Geo":[42.473448, 26.515082], "Ports": [8.0, 8.0] },
+				{ "Name":"Botev", "Address":"Preslav str", "Geo":[42.505158, 26.526134], "Ports": [8.0, 8.0] },
+				{ "Name":"Zornica", "Address":"Zornica str", "Geo":[42.478214, 26.526222], "Ports": [8.0, 8.0] }
+				]}
+			]
+		},
+		{ "Name":"North Bulgaria", "Groups":[
+			{"Name":"Varna", "Stations": [
+				{ "Name":"Briz", "Address":"Popov str", "Geo":[43.217912, 27.951430], "Ports": [8.0, 8.0] },
+				{ "Name":"Chaika", "Address":"Boris str", "Geo":[43.213480, 27.938702], "Ports": [8.0, 8.0] },
+				{ "Name":"Belica", "Address":"Primorska str", "Geo":[43.227085, 27.964445], "Ports": [8.0, 8.0] }
+				]},
+			{"Name":"Pleven", "Stations": [
+				{ "Name":"Voden", "Address":"Trapezica str", "Geo":[43.418467, 24.617864], "Ports": [8.0, 8.0] },
+				{ "Name":"Panorama", "Address":"Javor str", "Geo":[43.393168, 24.628004], "Ports": [8.0, 8.0] },
+				{ "Name":"Drujba", "Address":"Iztok str", "Geo":[43.410953, 24.638048], "Ports": [8.0, 8.0] }
+				]},
+			{"Name":"Vidin", "Stations": [
+				{ "Name":"Kaleto", "Address":"Vida str", "Geo":[43.989715, 22.883008], "Ports": [8.0, 8.0] },
+				{ "Name":"Pliska", "Address":"Kamchia str", "Geo":[43.990802, 22.860870], "Ports": [8.0, 8.0] },
+				{ "Name":"Panonia", "Address":"Reduta str", "Geo":[44.006139, 22.875764], "Ports": [8.0, 8.0] }
+				]}
+			]
+		}
+	]
+}
+
